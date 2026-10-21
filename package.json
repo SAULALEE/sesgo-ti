@@ -1,0 +1,19 @@
+{
+  "name": "sesgo-ti-web",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^14.4.1",
+    "astro": "^7.4.1",
+    "wrangler": "^4.151.3"
+  }
+}
