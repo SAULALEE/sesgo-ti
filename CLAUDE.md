@@ -22,9 +22,14 @@ Consult the relevant sources before beginning work that depends on them.
 
 ### Project documentation
 
-No `docs/` directory exists yet. Brand context, product context, architecture, decisions (ADRs), and project status have not been written down in this repository.
+Documentation lives in `docs/`, in Spanish (canonical) and English (mirror). See `docs/README.md` for the index and the sync rule.
 
-When any of that documentation is created, add its path here so it becomes part of the instruction hierarchy. Until then, do not assume such documentation exists, and do not treat anything said in conversation as if it were a recorded decision.
+- `docs/es/decisiones.md` / `docs/en/decisions.md`: ADRs (technical decisions).
+- `docs/es/contexto-marca.md` / `docs/en/brand-context.md`: brand and product context. Unfinished draft; do not treat its empty sections as decided.
+- `docs/es/arquitectura.md` / `docs/en/architecture.md`: target architecture.
+- `docs/es/estado.md` / `docs/en/status.md`: verified project status, pending work, and open decisions.
+
+Do not treat anything said in conversation as a recorded decision until it is written in these files.
 
 Use the actual codebase and configuration as evidence of the current implementation once one exists. When documentation and implementation disagree, identify the discrepancy and determine what requires correction.
 
@@ -44,7 +49,7 @@ Skills define detailed procedures. This file defines the overall rules under whi
 
 Project decisions must remain consistent with documented product objectives, requirements, and approved technical decisions.
 
-Do not assume that a technology, architecture, requirement, or design choice has already been approved unless the available sources support that conclusion. No stack, hosting, or architecture decision has been approved as of this version of the file.
+Do not assume that a technology, architecture, requirement, or design choice has already been approved unless the available sources support that conclusion. The stack is approved by ADR-001, ADR-002, and ADR-003 in `docs/es/decisiones.md`: Astro with `@astrojs/cloudflare`, Cloudflare Workers with Static Assets, Supabase, and Resend. Decisions not recorded there remain open (see `docs/es/estado.md`).
 
 When a proposed change conflicts with an established decision or affects important project constraints, identify the conflict and assess its implications before proceeding.
 
