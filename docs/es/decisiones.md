@@ -109,6 +109,33 @@ El destino de despliegue es Cloudflare Workers con Static Assets. El resto del s
 - **Pendiente de verificar con documentación oficial:** que el plan gratuito de Workers permite uso comercial y sus límites actuales. Esta afirmación no se da por cierta hasta confirmarla, porque ADR-001 se apoyaba en ella para Pages.
 - El proceso de build y despliegue por rama (Workers Builds u otro) está por configurar.
 
+## ADR-004 — Internacionalización: español en la raíz, inglés en `/en`
+
+**Estado:** Vigente
+
+**Fecha:** octubre de 2026
+
+### Contexto
+
+El sitio se publica en español e inglés (contexto de marca). El público inicial son pymes hispanohablantes. El idioma por defecto lo definió el responsable del proyecto: español.
+
+### Opciones consideradas
+
+1. Español en la raíz (`/`) e inglés bajo `/en`.
+2. Ambos idiomas con prefijo (`/es` y `/en`) y una redirección desde `/`.
+
+### Decisión
+
+Se usa el enrutamiento de internacionalización de Astro con `defaultLocale: "es"`, `locales: ["es", "en"]` y `routing.prefixDefaultLocale: false`. Las páginas en español viven en la raíz de `src/pages/` y las de inglés en `src/pages/en/`. Configuración tomada de la documentación oficial de Astro (guía de internacionalización).
+
+### Implicaciones
+
+- La opción 1 evita una redirección en `/` y mantiene las URLs en español sin prefijo.
+- Cada página nueva debe existir en ambos idiomas; el contenido se duplica y debe mantenerse sincronizado.
+- El texto en español usa tratamiento de **usted**.
+- Las opciones de rutas personalizadas por idioma exigen `output: "server"` y que no haya páginas prerenderizadas, según la documentación; no se usan aquí.
+- Selector de idioma, etiquetas `hreflang` y `lang` del `<html>` por idioma se resuelven al implementar el layout y el SEO base.
+
 ## Regla para nuevos ADRs
 
 Cuando una decisión cambie, agrega una entrada con identificador, fecha, contexto, alternativas, decisión e implicaciones. Si sustituye una decisión previa, conserva la anterior y enlaza ambos registros.

@@ -2,42 +2,70 @@
 
 > Spanish source: [`../es/contexto-marca.md`](../es/contexto-marca.md). The Spanish version is canonical; this file mirrors it.
 
-> **Unfinished draft.** The answers are provided by the project owner. Nothing below is decided until it is written here.
+> **Partial draft.** What follows was provided by the project owner. Points marked _Pending_ are not decided.
 
-The only thing documented so far (ADR-001): SESGO TI needs a landing page to attract external clients that showcases web application development, automation, and AI integration, built by a single person.
+Technical context (ADR-001): SESGO TI needs a landing page to attract external clients, built by a single person.
 
 ## 1. What SESGO TI is
 
-_Pending. What is it, in one or two sentences? Individual, studio, company?_
+Presents itself as a **studio / agency**, although development is currently done by a single person (ADR-001). _Pending: description in one or two sentences._
 
 ## 2. Target audience
 
-_Pending. Who hires? Company size, industry, role of the decision maker?_
+**SMBs** (small and medium-sized businesses). _Pending: industry and role of the decision maker._
 
 ## 3. Services
 
-_Pending. Web application development, automation, and AI integration are the three topics in ADR-001. Which ones are shown, in how much detail, and are there prices or packages?_
+**What is shown:**
+
+- Cross-platform software development.
+- Custom ERPs.
+- AI integration and automation.
+- Product design (UX/UI).
+
+**Focus of the detail:** architecture, problem solving, and business impact, rather than generic technology lists. Services are shown through the process: **Diagnosis → Design → Engineering → Deployment**.
+
+**Pricing and packages:** no public prices and no rigid packages. Engagement models:
+
+- Fixed-fee Discovery Sprints.
+- Custom projects at a closed budget.
+- Retainer (ongoing cells) for software evolution.
 
 ## 4. Value proposition
 
-_Pending. Why hire SESGO TI instead of another option?_
+Convergence of precision engineering, artificial intelligence, and signature design. Complex software problems are solved through strategy and architectural ingenuity (the "bias", *sesgo*), creating elegant, maintainable products ready to scale toward future ecosystems (physical, educational, or SaaS).
 
 ## 5. Conversion goal
 
-_Pending. The contact form is the intended channel (ADR-001). What action is wanted from the visitor and how is success measured?_
+The main action is **submitting the contact form** (ADR-001). _Pending: how success is measured._
 
 ## 6. Tone and voice
 
-_Pending. Formal, friendly, technical? Informal or formal address?_
+Sober, cultured, precise, mature, and direct. Avoids inflated startup jargon ("disruptive", "synergy") and an aggressive sales tone. Speaks with elegance and technical solidity. The reader is addressed formally (**usted** in Spanish). Example register: "Hablemos de su siguiente arquitectura" ("Let's talk about your next architecture").
 
 ## 7. Site language(s)
 
-_Pending. Spanish only, English only, or both?_
+**Spanish and English.** Spanish by default at the root (`/`), English under `/en` (ADR-004).
 
 ## 8. Visual identity
 
-_Pending. Logo, palette, typefaces, and visual references liked or disliked._
+- **Logo:** abstract, fluid mark with soft edges, with a hidden idea of a lens / cyclops eye, cut by a clean 45° line that symbolizes the "bias" (*sesgo*). _Pending: logo files._
+- **Palette:**
+
+  | Role | Name | Value |
+  | --- | --- | --- |
+  | Background | Mirage | `#1b2232` |
+  | Primary accent | Danube | `#5b83d3` |
+  | Secondary accent | Westar | `#dfdddb` |
+
+  Contrast measured against the Mirage background (WCAG): Westar 11.73:1; Danube 4.26:1. Danube does not reach 4.5:1 for normal body text; it is suitable for large headings and interface elements (3:1 minimum). For small text on the background, use Westar.
+
+- **Typography:** Instrument Serif for wordmark and headings (classic, signature character); Inter for technical subheads, body, and subtitles (precision and engineering).
 
 ## 9. Content and proof
 
-_Pending. Are there projects, case studies, or testimonials to show? What content already exists?_
+- **Case studies:** structured as engineering and design essays: Problem → Applied bias → Architecture / Interface → Impact.
+- **Testimonials:** short quotes from decision makers (CEOs, CTOs) focused on the system's reliability and elegance.
+- **Thought leadership:** articles and publications on software architecture and design in the age of AI, to build intellectual authority.
+
+_Pending: state whether real case studies, testimonials, or articles already exist. Sample content will not be published as if it were real._

@@ -111,6 +111,33 @@ The deployment target is Cloudflare Workers with Static Assets. The rest of the 
 - **Pending verification against official documentation:** that Workers' free plan allows commercial use, and its current limits. This is not taken as true until confirmed, because ADR-001 relied on it for Pages.
 - The per-branch build and deploy process (Workers Builds or other) is yet to be configured.
 
+## ADR-004 — Internationalization: Spanish at the root, English under `/en`
+
+**Status:** Current
+
+**Date:** October 2026
+
+### Context
+
+The site is published in Spanish and English (brand context). The initial audience is Spanish-speaking SMBs. The default language was set by the project owner: Spanish.
+
+### Options considered
+
+1. Spanish at the root (`/`) and English under `/en`.
+2. Both languages prefixed (`/es` and `/en`) with a redirect from `/`.
+
+### Decision
+
+Astro's internationalization routing is used with `defaultLocale: "es"`, `locales: ["es", "en"]`, and `routing.prefixDefaultLocale: false`. Spanish pages live at the root of `src/pages/` and English pages in `src/pages/en/`. Configuration taken from Astro's official internationalization guide.
+
+### Implications
+
+- Option 1 avoids a redirect at `/` and keeps Spanish URLs unprefixed.
+- Every new page must exist in both languages; content is duplicated and must be kept in sync.
+- Spanish copy uses the formal **usted** form of address.
+- Custom per-locale paths require `output: "server"` and no prerendered pages, according to the documentation; they are not used here.
+- Language switcher, `hreflang` tags, and per-language `<html lang>` are handled when implementing the layout and base SEO.
+
 ## Rule for new ADRs
 
 When a decision changes, add an entry with identifier, date, context, alternatives, decision, and implications. If it supersedes a previous decision, keep the earlier one and link both records.

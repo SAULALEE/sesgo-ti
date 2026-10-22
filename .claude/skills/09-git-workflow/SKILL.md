@@ -15,7 +15,8 @@ Adapted from the `git-workflow` skill used in Katedra. Branch names and deployme
 ## 2. Branches
 
 - **`main`:** production. It is the branch deployed to Cloudflare Workers (see ADR-003). Do not commit directly to `main`.
-- **Feature branches:** created from an up-to-date `main`. Name them `feature/<topic>` in short kebab-case, for example `feature/hero-section`, `feature/services-page`, `feature/contact-form`, `feature/seo-base`.
+- **`staging`:** the testing branch that sits between feature branches and `main`. All changes are integrated and tested here before reaching production. Do not commit directly to `staging`; it receives feature branches by merge.
+- **Feature branches:** created from an up-to-date `staging`. Name them `feature/<topic>` in short kebab-case, for example `feature/hero-section`, `feature/services-page`, `feature/contact-form`, `feature/seo-base`.
 - **Previews:** per-branch preview deployments on Cloudflare Workers are not configured yet (pending, see `docs/es/estado.md`). Once configured, review the change on its preview URL before merging.
 
 ## 3. Commits
@@ -52,7 +53,8 @@ Format:
 ## 5. Push and Merge
 
 - **Never push** unless the maintainer explicitly asks for it in the conversation.
-- Push feature branches. Merge into `main` only after the maintainer has reviewed the preview deployment and the checks in `04-quality-and-verification` have been run.
+- Push feature branches. Flow: `feature/*` → `staging` → `main`. Merge a feature branch into `staging` only after the checks in `04-quality-and-verification` have been run. Merge `staging` into `main` only after the maintainer has tested `staging` (preview deployment, once configured). Never merge a feature branch directly into `main`.
+- Merges create commits: do them only with the maintainer's explicit consent.
 - **Never force-push to `main`.**
 - **Never commit secrets.** `.env` files and API keys stay out of the repository. Confirm that `.env` is listed in `.gitignore` before the first commit.
 
@@ -61,7 +63,7 @@ Format:
 Request: "Add the services section."
 
 ```bash
-git checkout main
+git checkout staging
 git pull
 git checkout -b feature/services-section
 # implement the section
