@@ -9,8 +9,11 @@ export const ui = {
     'nav.language': 'Idioma',
     'nav.switchTo': 'English',
     'footer.rights': 'Todos los derechos reservados.',
-    'home.title': 'SESGO TI',
-    'home.placeholder': 'Hablemos de su siguiente arquitectura.',
+    'hero.eyebrow': 'Ingeniería de software, inteligencia artificial y diseño de producto',
+    'hero.title': 'Ingeniería de precisión, inteligencia artificial y diseño de autor.',
+    'hero.lead':
+      'Resolvemos problemas de software complejos con estrategia e ingenio arquitectónico: productos elegantes, mantenibles y preparados para escalar.',
+    'hero.cta': 'Hablemos de su siguiente arquitectura',
   },
   en: {
     'site.description':
@@ -18,8 +21,11 @@ export const ui = {
     'nav.language': 'Language',
     'nav.switchTo': 'Español',
     'footer.rights': 'All rights reserved.',
-    'home.title': 'SESGO TI',
-    'home.placeholder': "Let's talk about your next architecture.",
+    'hero.eyebrow': 'Software engineering, artificial intelligence, and product design',
+    'hero.title': 'Precision engineering, artificial intelligence, and signature design.',
+    'hero.lead':
+      'We solve complex software problems with strategy and architectural ingenuity: elegant, maintainable products ready to scale.',
+    'hero.cta': "Let's talk about your next architecture",
   },
 } as const satisfies Record<Locale, Record<string, string>>;
 
