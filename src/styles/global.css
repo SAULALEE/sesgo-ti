@@ -1,0 +1,64 @@
+:root {
+  /* Palette: docs/es/contexto-marca.md §8 */
+  --color-bg: #1b2232; /* Mirage */
+  --color-accent: #5b83d3; /* Danube: large headings and UI only (4.26:1 on bg) */
+  --color-text: #dfdddb; /* Westar: body text (11.73:1 on bg) */
+  --color-text-muted: color-mix(in srgb, var(--color-text) 70%, var(--color-bg));
+  --color-line: color-mix(in srgb, var(--color-text) 16%, var(--color-bg));
+
+  --font-display: var(--font-instrument-serif), serif;
+  --font-body: var(--font-inter), sans-serif;
+
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --content-width: 72rem;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.1;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--content-width);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}

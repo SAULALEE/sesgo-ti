@@ -1,16 +1,28 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import { useTranslations } from '../i18n/ui';
+
+const t = useTranslations('es');
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="SESGO TI">
+  <div class="container placeholder">
+    <h1>{t('home.title')}</h1>
+    <p>{t('home.placeholder')}</p>
+  </div>
+</Layout>
+
+<style>
+  .placeholder {
+    padding-block: clamp(4rem, 12vw, 9rem);
+  }
+  h1 {
+    font-size: clamp(3rem, 9vw, 6rem);
+    color: var(--color-accent);
+  }
+  p {
+    margin-top: 1.5rem;
+    max-width: 36rem;
+    color: var(--color-text-muted);
+  }
+</style>
