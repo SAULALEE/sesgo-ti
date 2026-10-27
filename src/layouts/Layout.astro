@@ -11,7 +11,7 @@ interface Props {
 
 const lang: Locale = locales.find((l) => l === Astro.currentLocale) ?? defaultLocale;
 const t = useTranslations(lang);
-const { title = 'SESGO TI', description = t('site.description') } = Astro.props;
+const { title = t('site.title'), description = t('site.description') } = Astro.props;
 
 const otherLocale: Locale = lang === 'es' ? 'en' : 'es';
 const pathname = Astro.url.pathname;
@@ -19,6 +19,16 @@ const pathInLocale =
   lang === defaultLocale ? pathname : pathname.replace(/^\/en(?=\/|$)/, '') || '/';
 const switchHref = getRelativeLocaleUrl(otherLocale, pathInLocale);
 const homeHref = getRelativeLocaleUrl(lang, '/');
+
+// Absolute URLs need `site` (SITE_URL at build time); there is no production domain yet.
+const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href : undefined);
+const canonical = absolute(getRelativeLocaleUrl(lang, pathInLocale));
+const alternates = locales.map((l) => ({
+  hreflang: l,
+  href: absolute(getRelativeLocaleUrl(l, pathInLocale)),
+}));
+const defaultAlternate = absolute(getRelativeLocaleUrl(defaultLocale, pathInLocale));
+const ogLocale = { es: 'es_ES', en: 'en_US' }[lang];
 ---
 
 <!doctype html>
@@ -31,6 +41,19 @@ const homeHref = getRelativeLocaleUrl(lang, '/');
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <title>{title}</title>
+    {canonical && <link rel="canonical" href={canonical} />}
+    {
+      canonical &&
+        alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)
+    }
+    {defaultAlternate && <link rel="alternate" hreflang="x-default" href={defaultAlternate} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SESGO TI" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content={ogLocale} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta name="twitter:card" content="summary" />
     <Font cssVariable="--font-instrument-serif" />
     <Font cssVariable="--font-inter" />
   </head>

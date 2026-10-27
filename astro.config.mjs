@@ -4,6 +4,8 @@ import cloudflare from '@astrojs/cloudflare';
 
 // https://astro.build/config
 export default defineConfig({
+  // Set SITE_URL at build time once a production domain exists; enables canonical and hreflang URLs.
+  site: process.env.SITE_URL || undefined,
   adapter: cloudflare(),
   i18n: {
     locales: ['es', 'en'],

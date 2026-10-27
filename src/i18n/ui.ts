@@ -4,6 +4,7 @@ export const defaultLocale: Locale = 'es';
 
 export const ui = {
   es: {
+    'site.title': 'SESGO TI | Ingeniería de software, IA y diseño de producto',
     'site.description':
       'Estudio de ingeniería de software, inteligencia artificial y diseño de producto.',
     'nav.language': 'Idioma',
@@ -43,6 +44,7 @@ export const ui = {
       'Ponemos el sistema en producción y lo dejamos preparado para evolucionar.',
   },
   en: {
+    'site.title': 'SESGO TI | Software engineering, AI, and product design',
     'site.description':
       'Software engineering, artificial intelligence, and product design studio.',
     'nav.language': 'Language',
