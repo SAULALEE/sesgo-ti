@@ -8,6 +8,7 @@
 - **Actualizado:** conserva una decisión válida, pero con cambios posteriores.
 - **Sustituido:** fue correcto en una etapa anterior y ya no debe usarse.
 - **Rechazado:** se evaluó y no se adoptó.
+- **Propuesto:** redactado para decisión. No está aprobado y no debe tratarse como vigente hasta que el responsable lo apruebe.
 
 Las decisiones actuales se redactan en presente. El contexto de una decisión anterior se redacta en pasado para dejar claro que describe una etapa histórica.
 
@@ -135,6 +136,72 @@ Se usa el enrutamiento de internacionalización de Astro con `defaultLocale: "es
 - El texto en español usa tratamiento de **usted**.
 - Las opciones de rutas personalizadas por idioma exigen `output: "server"` y que no haya páginas prerenderizadas, según la documentación; no se usan aquí.
 - Selector de idioma, etiquetas `hreflang` y `lang` del `<html>` por idioma se resuelven al implementar el layout y el SEO base.
+
+## ADR-005 — Protección antispam del formulario: Cloudflare Turnstile
+
+**Estado:** Vigente (aprobado por el responsable)
+
+**Fecha:** octubre de 2026
+
+### Contexto
+
+El formulario de contacto es público, guarda datos en Supabase (ADR-002) y envía un correo con Resend (ADR-001), cuyo plan gratuito admite 100 correos al día. Sin protección, un bot puede llenar la tabla y agotar esa cuota, con lo que los clientes reales dejarían de ser notificados.
+
+### Opciones consideradas
+
+1. Cloudflare Turnstile, con verificación del token en el servidor.
+2. Campo señuelo (honeypot) y validación de tiempo de envío, sin servicio externo.
+3. Otro CAPTCHA de terceros. No se evaluó en detalle.
+
+### Decisión
+
+Opción 1. El endpoint del formulario rechaza toda solicitud cuyo token de Turnstile no verifique en el servidor. Un campo señuelo puede añadirse después como capa adicional si hiciera falta.
+
+### Evidencia
+
+Página de planes de Turnstile (documentación oficial de Cloudflare):
+
+- El plan gratuito ofrece verificaciones ilimitadas, hasta 20 widgets por cuenta y 10 hostnames por widget. La analítica conserva 7 días y se mantiene la marca de Cloudflare.
+- La página lo describe como adecuado para "la mayoría de las aplicaciones en producción" y pymes, y afirma que puede usarse sin otros servicios de Cloudflare.
+
+### Implicaciones
+
+- La clave secreta se define como secreto de Workers (`wrangler secret` y `.dev.vars`, ver ADR-003). La clave de sitio es pública.
+- El widget carga un script de Cloudflare en la página del formulario y añade una llamada del servidor por cada envío.
+- **No verificado:** los términos de uso comercial del plan gratuito (la página de planes no los incluye), la accesibilidad y privacidad del widget, y si un dominio `*.workers.dev` es válido como hostname de un widget.
+- Se reconsidera si los términos impiden el uso comercial o si el widget genera fricción medible en las conversiones.
+
+## ADR-006 — Modo de renderizado: sitio estático con un endpoint de servidor
+
+**Estado:** Vigente (aprobado por el responsable)
+
+**Fecha:** octubre de 2026
+
+### Contexto
+
+Astro prerenderiza todo por defecto. El único elemento que necesita código de servidor es el endpoint del formulario de contacto. El adaptador `@astrojs/cloudflare` ya está instalado y `astro.config.mjs` no define `output`, por lo que el sitio actual ya es estático con adaptador.
+
+### Opciones consideradas
+
+1. Mantener la salida estática por defecto y marcar solo el endpoint del formulario con `export const prerender = false`.
+2. `output: "server"`: todas las páginas se renderizan bajo demanda.
+
+### Decisión
+
+Opción 1. Las páginas siguen prerenderizadas y el endpoint `POST /api/contact` (sin prefijo de idioma) es la única ruta bajo demanda.
+
+### Evidencia
+
+- Guía de renderizado bajo demanda de Astro: todo se prerenderiza por defecto, `prerender = false` activa el renderizado bajo demanda por página o endpoint, y un sitio estático con un endpoint de servidor es un caso soportado.
+- Documentación del adaptador de Cloudflare: el renderizado bajo demanda requiere el adaptador, ya instalado.
+- Precios de Workers: las solicitudes a assets estáticos son gratuitas e ilimitadas. El plan gratuito permite 100,000 solicitudes al día y 10 ms de CPU por invocación.
+
+### Implicaciones
+
+- Con la opción 1 solo el endpoint consume invocaciones de Workers; con la opción 2 lo haría cada visita a una página.
+- Es compatible con ADR-004: la internacionalización usada no exige `output: "server"`.
+- **No verificado:** que el endpoint (verificación de Turnstile, inserción en Supabase y envío con Resend) cumpla el límite de 10 ms de CPU. Debe medirse al implementarlo.
+- Se reconsidera si el proyecto necesita muchas páginas renderizadas por petición, por ejemplo con la gestión de clientes mencionada en ADR-002.
 
 ## Regla para nuevos ADRs
 
