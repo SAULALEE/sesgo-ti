@@ -8,10 +8,11 @@
 - `astro.config.mjs` registra el adaptador `cloudflare()`, la internacionalización (ADR-004), las fuentes de marca y `site` desde la variable de build `SITE_URL`.
 - Implementado en `feature/landing`: layout base con selector de idioma (`/` en español y `/en` en inglés), estilos globales, hero, sección de servicios y proceso, SEO base (títulos, Open Graph, `robots.txt`; `canonical` y `hreflang` solo si se define `SITE_URL`) y formulario de contacto (componente, endpoint `POST /api/contact` y esquema en `supabase/contact_messages.sql`). Ver [arquitectura.md](arquitectura.md).
 - `bun run build` pasa con y sin `SITE_URL`, y con el formulario (verificado en la rama `feature/landing`).
+- `bun run check` (`wrangler types` y `astro check`, con TypeScript 6) pasa con 0 errores, 0 advertencias y 0 sugerencias (verificado en `feature/landing`). `worker-configuration.d.ts` se genera con ese comando y no se versiona.
 - El endpoint se probó en `bun run preview` con variables falsas: responde `400 invalid` ante datos inválidos o un cuerpo que no es un formulario, `400 captcha` ante un token falso y `500 unavailable` sin variables de entorno.
 - `wrangler.jsonc` apunta a Workers con Static Assets (`main` + `assets`).
 - `.gitignore` excluye `.wrangler/` y `.dev.vars*`; `.dev.vars.example` y `.env.example` listan las variables.
-- No verificado: la integración real con Turnstile, Supabase y Resend (faltan credenciales); la ruta REST de Supabase y `turnstile.reset()`, no confirmadas en la documentación; el límite de 10 ms de CPU del endpoint; la apariencia en navegador; `bun run dev`; y `astro check` (requiere instalar `@astrojs/check`).
+- No verificado: la integración real con Turnstile, Supabase y Resend (faltan credenciales); la ruta REST de Supabase y `turnstile.reset()`, no confirmadas en la documentación; el límite de 10 ms de CPU del endpoint; la apariencia en navegador; y `bun run dev`.
 - No hay sitemap, `og:image`, logo ni dominio de producción.
 - El despliegue real, las previews por rama y los secretos en Cloudflare no están configurados.
 
