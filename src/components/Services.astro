@@ -1,0 +1,97 @@
+---
+import { useTranslations, type Locale } from '../i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const t = useTranslations(Astro.props.lang);
+
+const services = ['software', 'erp', 'ai', 'design'] as const;
+const steps = ['diagnosis', 'design', 'engineering', 'deployment'] as const;
+---
+
+<section class="services" id="services" aria-labelledby="services-title">
+  <div class="container">
+    <h2 id="services-title" class="services__title">{t('services.title')}</h2>
+    <p class="services__lead">{t('services.lead')}</p>
+
+    <ul class="services__list">
+      {
+        services.map((id) => (
+          <li class="services__item">
+            <h3>{t(`services.${id}.title`)}</h3>
+            <p>{t(`services.${id}.body`)}</p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <h2 id="process-title" class="services__title services__title--process">
+      {t('process.title')}
+    </h2>
+    <ol class="process" aria-labelledby="process-title">
+      {
+        steps.map((id) => (
+          <li class="process__step">
+            <h3>{t(`process.${id}.title`)}</h3>
+            <p>{t(`process.${id}.body`)}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .services {
+    padding-block: clamp(3rem, 8vw, 6rem);
+    border-top: 1px solid var(--color-line);
+  }
+  .services__title {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    color: var(--color-accent);
+  }
+  .services__title--process {
+    margin-top: clamp(3rem, 8vw, 5rem);
+  }
+  .services__lead {
+    margin: 1rem 0 0;
+    max-width: 38rem;
+    color: var(--color-text-muted);
+  }
+  .services__list,
+  .process {
+    display: grid;
+    gap: 2rem;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  }
+  .services__item,
+  .process__step {
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .services__item h3,
+  .process__step h3 {
+    font-size: 1.5rem;
+  }
+  .services__item p,
+  .process__step p {
+    margin: 0.75rem 0 0;
+  }
+  .process {
+    counter-reset: step;
+  }
+  .process__step::before {
+    counter-increment: step;
+    content: counter(step, decimal-leading-zero);
+    display: block;
+    margin-bottom: 0.75rem;
+    font-size: 0.8125rem;
+    letter-spacing: 0.12em;
+    color: var(--color-text-muted);
+  }
+</style>

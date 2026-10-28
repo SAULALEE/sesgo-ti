@@ -1,0 +1,177 @@
+---
+import { LIMITS } from '../lib/contact';
+import { useTranslations, type Locale } from '../i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+---
+
+<section class="contact" id="contact" aria-labelledby="contact-title">
+  <div class="container">
+    <h2 id="contact-title" class="contact__title">{t('contact.title')}</h2>
+    <p class="contact__lead">{t('contact.lead')}</p>
+
+    <form
+      class="contact__form"
+      method="post"
+      action="/api/contact"
+      data-sending={t('contact.sending')}
+      data-success={t('contact.success')}
+      data-error-invalid={t('contact.error.invalid')}
+      data-error-captcha={t('contact.error.captcha')}
+      data-error-unavailable={t('contact.error.unavailable')}
+    >
+      <input type="hidden" name="locale" value={lang} />
+
+      <label>
+        <span>{t('contact.name')}</span>
+        <input type="text" name="name" required maxlength={LIMITS.name} autocomplete="name" />
+      </label>
+
+      <label>
+        <span>{t('contact.email')}</span>
+        <input
+          type="email"
+          name="email"
+          required
+          maxlength={LIMITS.email}
+          autocomplete="email"
+        />
+      </label>
+
+      <label>
+        <span>{t('contact.message')}</span>
+        <textarea
+          name="message"
+          required
+          rows="6"
+          minlength={LIMITS.messageMin}
+          maxlength={LIMITS.message}></textarea>
+      </label>
+
+      {siteKey && <div class="cf-turnstile" data-sitekey={siteKey} data-theme="dark" />}
+
+      <button type="submit">{t('contact.submit')}</button>
+      <p class="contact__status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+{
+  siteKey && (
+    <script
+      is:inline
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+      async
+      defer
+    />
+  )
+}
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('.contact__form');
+  const status = form?.querySelector<HTMLElement>('.contact__status');
+  const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!form || !status || !button) return;
+
+    button.disabled = true;
+    status.textContent = form.dataset.sending ?? '';
+
+    let message = form.dataset.errorUnavailable ?? '';
+    try {
+      const res = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+      const result = (await res.json()) as { ok: boolean; error?: string };
+      if (result.ok) {
+        message = form.dataset.success ?? '';
+        form.reset();
+      } else if (result.error === 'invalid') {
+        message = form.dataset.errorInvalid ?? '';
+      } else if (result.error === 'captcha') {
+        message = form.dataset.errorCaptcha ?? '';
+      }
+    } catch {
+      // network failure keeps the "unavailable" message
+    }
+
+    status.textContent = message;
+    button.disabled = false;
+    // A Turnstile token is single-use, so request a fresh one after every attempt.
+    try {
+      (window as unknown as { turnstile?: { reset: () => void } }).turnstile?.reset();
+    } catch {
+      // widget not loaded
+    }
+  });
+</script>
+
+<style>
+  .contact {
+    padding-block: clamp(3rem, 8vw, 6rem);
+    border-top: 1px solid var(--color-line);
+  }
+  .contact__title {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    color: var(--color-accent);
+  }
+  .contact__lead {
+    margin: 1rem 0 0;
+    max-width: 38rem;
+    color: var(--color-text-muted);
+  }
+  .contact__form {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 36rem;
+    margin-top: 2.5rem;
+  }
+  label {
+    display: grid;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+  input,
+  textarea {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-line);
+    background: transparent;
+    color: var(--color-text);
+    font: inherit;
+  }
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  button {
+    justify-self: start;
+    padding: 0.875rem 1.5rem;
+    border: 1px solid var(--color-text);
+    background: transparent;
+    color: var(--color-text);
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+  }
+  button:hover:not(:disabled) {
+    background: var(--color-text);
+    color: var(--color-bg);
+  }
+  button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+  .contact__status {
+    margin: 0;
+    min-height: 1.6em;
+  }
+</style>
