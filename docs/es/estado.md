@@ -4,31 +4,41 @@
 
 ## Estado verificado
 
-- Proyecto Astro 7.4.1 generado con la plantilla mínima, con `@astrojs/cloudflare` 14.4.1 y `wrangler` instalados. Gestor de paquetes: bun.
-- `src/pages/index.astro` sigue siendo la plantilla por defecto.
-- `astro.config.mjs` registra el adaptador `cloudflare()`. `bun run build` pasa y `bun run preview` sirve `/` (verificado; `bun run dev` no se probó).
+- Proyecto Astro 7.4.1 con `@astrojs/cloudflare` 14.4.1 y `wrangler` instalados. Gestor de paquetes: bun.
+- `astro.config.mjs` registra el adaptador `cloudflare()`, la internacionalización (ADR-004), las fuentes de marca y `site` desde la variable de build `SITE_URL`.
+- Implementado en `feature/landing`: layout base con selector de idioma (`/` en español y `/en` en inglés), estilos globales, hero, sección de servicios y proceso, SEO base (títulos, Open Graph, `robots.txt`; `canonical` y `hreflang` solo si se define `SITE_URL`) y formulario de contacto (componente, endpoint `POST /api/contact` y esquema en `supabase/contact_messages.sql`). Ver [arquitectura.md](arquitectura.md).
+- `bun run build` pasa con y sin `SITE_URL`, y con el formulario (verificado en la rama `feature/landing`).
+- `bun run check` (`wrangler types` y `astro check`, con TypeScript 6) pasa con 0 errores, 0 advertencias y 0 sugerencias (verificado en `feature/landing`). `worker-configuration.d.ts` se genera con ese comando y no se versiona.
+- El endpoint se probó en `bun run preview` con variables falsas: responde `400 invalid` ante datos inválidos o un cuerpo que no es un formulario, `400 captcha` ante un token falso y `500 unavailable` sin variables de entorno.
 - `wrangler.jsonc` apunta a Workers con Static Assets (`main` + `assets`).
-- `.gitignore` excluye `.wrangler/` y `.dev.vars*`; `.dev.vars.example` lista las variables (el nombre de la clave de Supabase es provisional).
-- No existe formulario, estilos, componentes ni integración con Supabase o Resend.
+- `.gitignore` excluye `.wrangler/` y `.dev.vars*`; `.dev.vars.example` y `.env.example` listan las variables.
+- No verificado: la integración real con Turnstile, Supabase y Resend (faltan credenciales); la ruta REST de Supabase y `turnstile.reset()`, no confirmadas en la documentación; el límite de 10 ms de CPU del endpoint; la apariencia en navegador; y `bun run dev`.
+- No hay sitemap, `og:image`, logo ni dominio de producción.
 - El despliegue real, las previews por rama y los secretos en Cloudflare no están configurados.
+
+## Ramas
+
+- Se agrupa por área, no por tarea: `feature/landing` (hero, servicios, SEO base y formulario de contacto) y `feature/docs` (documentación y ADRs).
+- `feature/hero-section` en `origin` es una rama anterior, contenida en `feature/landing`; pendiente decidir si se elimina.
+- Ninguna está fusionada a `staging` ni a `main`.
 
 ## Decisiones vigentes
 
-ADR-001 (actualizado), ADR-002, ADR-003 y ADR-004. Ver [decisiones.md](decisiones.md).
+ADR-001 (actualizado), ADR-002, ADR-003, ADR-004, ADR-005 (antispam con Cloudflare Turnstile) y ADR-006 (sitio estático con un solo endpoint de servidor). Ver [decisiones.md](decisiones.md).
 
 ## Pendientes
 
-1. Completar [contexto-marca.md](contexto-marca.md). Bloquea el diseño y el contenido.
+1. Completar [contexto-marca.md](contexto-marca.md). Faltan la descripción de SESGO TI en una o dos frases, el sector y rol de quien decide, la medición de la conversión, los archivos del logo y confirmar si existen casos, testimonios o artículos reales.
 2. ~~Base técnica local~~ (hecho): adaptador, `.gitignore`, `.dev.vars.example`, build y preview. Falta configurar el despliegue en Cloudflare y las previews por rama.
 3. Logo (isotipo y favicon): el responsable debe generarlo; hasta entonces el header usa un wordmark de texto y el favicon es el de Astro.
-4. Construir la landing por ramas `feature/<tema>`: layout y estilos base, hero, servicios, formulario de contacto, SEO base.
+4. Landing (`feature/landing`): layout y estilos base, hero, servicios, SEO base y formulario de contacto están hechos. Falta la prueba de extremo a extremo: crear el proyecto de Supabase y ejecutar `supabase/contact_messages.sql`, crear el widget de Turnstile y la cuenta de Resend, y definir las variables (ver [arquitectura.md](arquitectura.md)).
+5. Definir el dominio de producción. Habilita `SITE_URL`, el sitemap, `canonical` y `hreflang`, y el remitente de Resend.
+6. Fusionar las ramas a `staging` tras las verificaciones de `04-quality-and-verification`. Requiere el consentimiento del responsable.
 
-## Decisiones abiertas (requieren ADR)
+## Decisiones abiertas
 
-- Protección antispam del formulario.
-- Mitigación de la pausa de Supabase por inactividad.
-- Modo de renderizado de Astro: sitio estático con endpoint de servidor, o servidor completo.
-- Confirmar con documentación oficial que Workers en plan gratuito permite uso comercial (ver ADR-003).
+- Mitigación de la pausa de Supabase por inactividad (requiere ADR). La página de preguntas de facturación de Supabase consultada no documenta esa pausa; ADR-002 sigue siendo la única fuente.
+- Confirmar que Workers en plan gratuito permite uso comercial (ver ADR-003). La página de precios de Workers no lo menciona; falta revisar los términos de servicio de Cloudflare.
 
 ## Discrepancias detectadas
 

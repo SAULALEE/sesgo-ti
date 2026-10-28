@@ -10,6 +10,7 @@
 - **Updated:** keeps a valid decision, with later changes.
 - **Superseded:** was correct at an earlier stage and must no longer be used.
 - **Rejected:** was evaluated and not adopted.
+- **Proposed:** written for decision. It is not approved and must not be treated as current until the owner approves it.
 
 Current decisions are written in the present tense. The context of an earlier decision is written in the past tense to make clear that it describes a historical stage.
 
@@ -137,6 +138,72 @@ Astro's internationalization routing is used with `defaultLocale: "es"`, `locale
 - Spanish copy uses the formal **usted** form of address.
 - Custom per-locale paths require `output: "server"` and no prerendered pages, according to the documentation; they are not used here.
 - Language switcher, `hreflang` tags, and per-language `<html lang>` are handled when implementing the layout and base SEO.
+
+## ADR-005 — Form anti-spam protection: Cloudflare Turnstile
+
+**Status:** Current (approved by the owner)
+
+**Date:** October 2026
+
+### Context
+
+The contact form is public, stores data in Supabase (ADR-002), and sends an email with Resend (ADR-001), whose free plan allows 100 emails per day. Without protection, a bot can fill the table and exhaust that quota, so real clients would stop being notified.
+
+### Options considered
+
+1. Cloudflare Turnstile, with server-side token verification.
+2. A honeypot field and submission-time validation, with no external service.
+3. Another third-party CAPTCHA. Not evaluated in detail.
+
+### Decision
+
+Option 1. The form endpoint rejects any request whose Turnstile token fails server-side verification. A honeypot field can be added later as an extra layer if needed.
+
+### Evidence
+
+Turnstile plans page (Cloudflare official documentation):
+
+- The free plan offers unlimited verifications, up to 20 widgets per account, and 10 hostnames per widget. Analytics keep 7 days and Cloudflare branding is retained.
+- The page describes it as suitable for "most production applications" and SMBs, and states it can be used without other Cloudflare services.
+
+### Implications
+
+- The secret key is defined as a Workers secret (`wrangler secret` and `.dev.vars`, see ADR-003). The site key is public.
+- The widget loads a Cloudflare script on the form page and adds a server call for every submission.
+- **Not verified:** the commercial-use terms of the free plan (the plans page does not include them), the widget's accessibility and privacy, and whether a `*.workers.dev` domain is valid as a widget hostname.
+- Reconsider if the terms prevent commercial use or if the widget causes measurable friction in conversions.
+
+## ADR-006 — Rendering mode: static site with one server endpoint
+
+**Status:** Current (approved by the owner)
+
+**Date:** October 2026
+
+### Context
+
+Astro prerenders everything by default. The only element that needs server code is the contact form endpoint. The `@astrojs/cloudflare` adapter is already installed and `astro.config.mjs` does not define `output`, so the current site is already static with an adapter.
+
+### Options considered
+
+1. Keep the default static output and mark only the form endpoint with `export const prerender = false`.
+2. `output: "server"`: all pages render on demand.
+
+### Decision
+
+Option 1. Pages stay prerendered and the `POST /api/contact` endpoint (no language prefix) is the only on-demand route.
+
+### Evidence
+
+- Astro on-demand rendering guide: everything is prerendered by default, `prerender = false` enables on-demand rendering per page or endpoint, and a static site with a server endpoint is a supported case.
+- Cloudflare adapter documentation: on-demand rendering requires the adapter, which is already installed.
+- Workers pricing: requests to static assets are free and unlimited. The free plan allows 100,000 requests per day and 10 ms of CPU time per invocation.
+
+### Implications
+
+- With option 1 only the endpoint consumes Workers invocations; with option 2 every page visit would.
+- Compatible with ADR-004: the internationalization used does not require `output: "server"`.
+- **Not verified:** that the endpoint (Turnstile verification, Supabase insert, and Resend send) fits the 10 ms CPU limit. It must be measured during implementation.
+- Reconsider if the project needs many pages rendered per request, for example with the client management mentioned in ADR-002.
 
 ## Rule for new ADRs
 
