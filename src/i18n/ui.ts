@@ -42,6 +42,18 @@ export const ui = {
     'process.deployment.title': 'Despliegue',
     'process.deployment.body':
       'Ponemos el sistema en producción y lo dejamos preparado para evolucionar.',
+    'contact.title': 'Contacto',
+    'contact.lead':
+      'Cuéntenos el problema que quiere resolver. Le responderemos por correo.',
+    'contact.name': 'Nombre',
+    'contact.email': 'Correo electrónico',
+    'contact.message': 'Mensaje',
+    'contact.submit': 'Enviar',
+    'contact.sending': 'Enviando…',
+    'contact.success': 'Recibimos su mensaje. Le responderemos pronto.',
+    'contact.error.invalid': 'Revise los datos: todos los campos son obligatorios y el mensaje debe tener al menos 10 caracteres.',
+    'contact.error.captcha': 'No pudimos verificar que sea una persona. Inténtelo de nuevo.',
+    'contact.error.unavailable': 'No pudimos enviar su mensaje. Inténtelo de nuevo en unos minutos.',
   },
   en: {
     'site.title': 'SESGO TI | Software engineering, AI, and product design',
@@ -82,6 +94,17 @@ export const ui = {
     'process.deployment.title': 'Deployment',
     'process.deployment.body':
       'We put the system into production and leave it ready to evolve.',
+    'contact.title': 'Contact',
+    'contact.lead': 'Tell us about the problem you want to solve. We will reply by email.',
+    'contact.name': 'Name',
+    'contact.email': 'Email',
+    'contact.message': 'Message',
+    'contact.submit': 'Send',
+    'contact.sending': 'Sending…',
+    'contact.success': 'We received your message. We will reply soon.',
+    'contact.error.invalid': 'Please check your details: all fields are required and the message must be at least 10 characters.',
+    'contact.error.captcha': 'We could not verify that you are a person. Please try again.',
+    'contact.error.unavailable': 'We could not send your message. Please try again in a few minutes.',
   },
 } as const satisfies Record<Locale, Record<string, string>>;
 
