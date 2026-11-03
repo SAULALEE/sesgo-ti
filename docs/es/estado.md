@@ -19,8 +19,9 @@
 ## Ramas
 
 - Se agrupa por área, no por tarea: `feature/landing` (hero, servicios, SEO base y formulario de contacto) y `feature/docs` (documentación y ADRs).
-- `feature/hero-section` en `origin` es una rama anterior, contenida en `feature/landing`; pendiente decidir si se elimina.
-- Ninguna está fusionada a `staging` ni a `main`.
+- `staging` (publicada en `origin`) contiene `feature/landing` y `feature/docs` fusionadas. `bun run check` y `bun run build` pasan sobre `staging`.
+- `main` no ha recibido cambios desde el andamiaje inicial. Solo recibe `staging` después de que el responsable la pruebe.
+- `feature/hero-section` se eliminó de `origin`; su commit está contenido en `feature/landing`.
 
 ## Decisiones vigentes
 
@@ -33,7 +34,7 @@ ADR-001 (actualizado), ADR-002, ADR-003, ADR-004, ADR-005 (antispam con Cloudfla
 3. Logo (isotipo y favicon): el responsable debe generarlo; hasta entonces el header usa un wordmark de texto y el favicon es el de Astro.
 4. Landing (`feature/landing`): layout y estilos base, hero, servicios, SEO base y formulario de contacto están hechos. Falta la prueba de extremo a extremo: crear el proyecto de Supabase y ejecutar `supabase/contact_messages.sql`, crear el widget de Turnstile y la cuenta de Resend, y definir las variables (ver [arquitectura.md](arquitectura.md)).
 5. Definir el dominio de producción. Habilita `SITE_URL`, el sitemap, `canonical` y `hreflang`, y el remitente de Resend.
-6. Fusionar las ramas a `staging` tras las verificaciones de `04-quality-and-verification`. Requiere el consentimiento del responsable.
+6. Probar `staging` y fusionarla a `main`. Requiere el consentimiento del responsable. Las previews por rama aún no están configuradas.
 
 ## Decisiones abiertas
 

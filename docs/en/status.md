@@ -21,8 +21,9 @@
 ## Branches
 
 - Branches are grouped by area, not by task: `feature/landing` (hero, services, base SEO, and contact form) and `feature/docs` (documentation and ADRs).
-- `feature/hero-section` on `origin` is an earlier branch, contained in `feature/landing`; whether to delete it is pending.
-- None is merged into `staging` or `main`.
+- `staging` (published on `origin`) contains `feature/landing` and `feature/docs` merged. `bun run check` and `bun run build` pass on `staging`.
+- `main` has not received changes since the initial scaffold. It only receives `staging` after the owner tests it.
+- `feature/hero-section` was deleted from `origin`; its commit is contained in `feature/landing`.
 
 ## Current decisions
 
@@ -35,7 +36,7 @@ ADR-001 (updated), ADR-002, ADR-003, ADR-004, ADR-005 (anti-spam with Cloudflare
 3. Logo (mark and favicon): to be created by the owner; until then the header uses a text wordmark and the favicon is Astro's.
 4. Landing page (`feature/landing`): layout and base styles, hero, services, base SEO, and the contact form are done. The end-to-end test is missing: create the Supabase project and run `supabase/contact_messages.sql`, create the Turnstile widget and the Resend account, and set the variables (see [architecture.md](architecture.md)).
 5. Define the production domain. It enables `SITE_URL`, the sitemap, `canonical` and `hreflang`, and the Resend sender.
-6. Merge the branches into `staging` after the checks in `04-quality-and-verification`. Requires the owner's consent.
+6. Test `staging` and merge it into `main`. Requires the owner's consent. Per-branch previews are not configured yet.
 
 ## Open decisions
 
