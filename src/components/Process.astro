@@ -1,0 +1,33 @@
+---
+import '../styles/components/process.css';
+import { landing } from '../i18n/landing';
+import type { Locale } from '../i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const { process } = landing[lang];
+---
+
+<div id="proceso" class="anchor"></div>
+<section class="process sheet" data-sheet data-tone="danube" aria-label={process.label}>
+  <div class="sheet__veil" aria-hidden="true"></div>
+  <h2 class="process__title" data-reveal>{process.titleStart}<span>{process.titleEnd}</span></h2>
+  <div class="process__steps">
+    {
+      process.steps.map((step, i) => (
+        <div class="step" data-step style={`--i:${i}`}>
+          <span class="step__number" aria-hidden="true">
+            {i + 1}
+          </span>
+          <div class="step__text">
+            <h3 class="step__title">{step.title}</h3>
+            <p class="step__body">{step.body}</p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>

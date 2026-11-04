@@ -1,56 +1,51 @@
 ---
-import { useTranslations, type Locale } from '../i18n/ui';
+import '../styles/components/hero.css';
+import { landing } from '../i18n/landing';
+import type { Locale } from '../i18n/ui';
+import { site } from '../lib/site';
 
 interface Props {
   lang: Locale;
 }
 
-const t = useTranslations(Astro.props.lang);
+const { lang } = Astro.props;
+const { hero, cursor } = landing[lang];
+const location = site.city ? `${site.city}, ${hero.country}` : hero.country;
+
+// Each letter gets a staggered entrance; the delay continues across both lines.
+let letterIndex = 0;
+const lines = hero.lines.map((line) =>
+  [...line].map((char) => (char === ' ' ? null : { char, delay: 160 + letterIndex++ * 55 })),
+);
 ---
 
-<section class="hero">
-  <div class="container hero__inner">
-    <p class="hero__eyebrow">{t('hero.eyebrow')}</p>
-    <h1 class="hero__title">{t('hero.title')}</h1>
-    <p class="hero__lead">{t('hero.lead')}</p>
-    <a class="hero__cta" href="#contact">{t('hero.cta')}</a>
+<section class="hero sheet" id="inicio" data-sheet data-tone="dark">
+  <div class="sheet__veil" aria-hidden="true"></div>
+  <div class="hero__top">
+    <p class="hero__lead"><strong>{hero.leadStrong}</strong> <span>{hero.lead}</span></p>
+  </div>
+  <h1 class="hero__title" aria-label={hero.title} style={`--hero-size:${hero.size}`}>
+    {
+      lines.map((line) => (
+        <span class="hero__line" aria-hidden="true">
+          {line.map((letter) =>
+            letter ? (
+              <span class="hero__build" style={`animation-delay:${letter.delay}ms`}>
+                <span data-l>{letter.char}</span>
+              </span>
+            ) : (
+              <span class="hero__gap" />
+            ),
+          )}
+        </span>
+      ))
+    }
+  </h1>
+  <div class="hero__bottom">
+    <div class="hero__actions">
+      <a class="hero__cta" href="#contacto" data-magnetic data-cursor-label={cursor.talk}>{hero.cta}</a>
+      <a class="hero__secondary" href="#caso" data-cursor-label={cursor.down}>{hero.secondary}</a>
+    </div>
+    <p class="hero__note">{hero.note} {location}</p>
   </div>
 </section>
-
-<style>
-  .hero {
-    padding-block: clamp(4rem, 12vw, 9rem);
-  }
-  .hero__eyebrow {
-    margin: 0 0 1.5rem;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-  }
-  .hero__title {
-    max-width: 18ch;
-    font-size: clamp(2.75rem, 8vw, 5.5rem);
-    color: var(--color-accent);
-  }
-  .hero__lead {
-    margin: 2rem 0 0;
-    max-width: 38rem;
-    font-size: clamp(1.0625rem, 2vw, 1.25rem);
-    color: var(--color-text);
-  }
-  .hero__cta {
-    display: inline-block;
-    margin-top: 2.5rem;
-    padding: 0.875rem 1.5rem;
-    border: 1px solid var(--color-text);
-    font-weight: 500;
-    text-decoration: none;
-    transition: background-color 0.15s, color 0.15s;
-  }
-  .hero__cta:hover {
-    background: var(--color-text);
-    color: var(--color-bg);
-  }
-</style>

@@ -1,0 +1,75 @@
+---
+import '../styles/components/site-header.css';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { landing } from '../i18n/landing';
+import { useTranslations, type Locale } from '../i18n/ui';
+import { site } from '../lib/site';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const { header, nav, cursor } = landing[lang];
+const otherLocale: Locale = lang === 'es' ? 'en' : 'es';
+const switchHref = getRelativeLocaleUrl(otherLocale, '/');
+---
+
+<header class="bar" data-header data-logo-tone="dark">
+  <div class="bar__start">
+    <button
+      type="button"
+      class="toggle"
+      data-menu-toggle
+      data-magnetic
+      data-cursor-label={cursor.open}
+      data-label-open={header.menu}
+      data-label-close={header.close}
+      aria-expanded="false"
+      aria-controls="menu"
+    >
+      <span class="toggle__icon" aria-hidden="true"><span></span><span></span></span>
+      <span data-menu-label>{header.menu}</span>
+    </button>
+  </div>
+  <a class="wordmark" href="#inicio" data-cursor-label={cursor.home}>SESGO TI</a>
+  <div class="bar__end">
+    <a
+      class="glass lang"
+      href={switchHref}
+      hreflang={otherLocale}
+      lang={otherLocale}
+      aria-label={`${t('nav.language')}: ${t('nav.switchTo')}`}>{t('nav.switchTo')}</a
+    >
+    <span class="glass clock"><span class="clock__dot" aria-hidden="true"></span>MX <span data-clock></span></span>
+    <a class="write" href="#contacto" data-magnetic data-cursor-label={cursor.talk}>{header.write}</a>
+  </div>
+</header>
+
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label={header.menu} data-tone="danube" data-menu>
+  <nav class="menu__nav" aria-label={header.sections}>
+    {
+      nav.map((item, i) => (
+        <a
+          class:list={['menu__link', { 'menu__link--italic': i % 2 === 1 }]}
+          href={item.href}
+          data-cursor-label={cursor.go}
+          style={`--i:${i}`}
+        >
+          <span class="menu__index">{String(i + 1).padStart(2, '0')}</span>
+          {item.label}
+        </a>
+      ))
+    }
+  </nav>
+  <div class="menu__extra">
+    {site.email && <span>{site.email}</span>}
+    {site.whatsapp && <span>{site.whatsapp}</span>}
+    <a href={switchHref} hreflang={otherLocale} lang={otherLocale}>{t('nav.switchTo')}</a>
+  </div>
+</div>
+
+<script>
+  import '../scripts/menu';
+</script>
