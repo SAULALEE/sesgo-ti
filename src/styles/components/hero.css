@@ -32,7 +32,8 @@
   line-height: 1.2;
 }
 .hero__title {
-  font-size: min(var(--hero-size), 470px);
+  /* Three lines must fit in the first screen, so height caps the size as well as width. */
+  font-size: min(var(--hero-size), 25svh, 470px);
   line-height: 0.8;
   letter-spacing: -0.035em;
 }
@@ -41,13 +42,9 @@
   margin-left: -0.05em;
   white-space: nowrap;
 }
-.hero__line + .hero__line {
-  margin-top: -0.02em;
-  margin-right: -0.08em;
-  margin-left: 0;
+.hero__accent {
   color: var(--color-accent);
   font-style: italic;
-  text-align: right;
 }
 .hero__build {
   display: inline-block;
