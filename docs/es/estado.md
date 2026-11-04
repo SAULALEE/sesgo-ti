@@ -28,7 +28,7 @@
 
 ## Decisiones vigentes
 
-ADR-001 (actualizado), ADR-002, ADR-003, ADR-004, ADR-005 (antispam con Cloudflare Turnstile), ADR-006 (sitio estático con un solo endpoint de servidor) y ADR-007 (voz y posicionamiento de la landing). Ver [decisiones.md](decisiones.md).
+ADR-001 (actualizado), ADR-002, ADR-003, ADR-004, ADR-005 (antispam con Cloudflare Turnstile), ADR-006 (sitio estático con un solo endpoint de servidor), ADR-007 (voz y posicionamiento de la landing) y ADR-008 (título principal de la landing). Ver [decisiones.md](decisiones.md).
 
 ## Pendientes
 

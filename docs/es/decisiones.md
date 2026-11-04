@@ -209,6 +209,8 @@ Opción 1. Las páginas siguen prerenderizadas y el endpoint `POST /api/contact`
 
 **Fecha:** noviembre de 2026
 
+> **Nota:** el título "Dime qué te duele." fue reemplazado por [ADR-008](#adr-008--título-principal-de-la-landing). El texto de este registro se conserva como se escribió.
+
 ### Contexto
 
 La landing se rediseñó en Claude Design. El prototipo le habla al lector de tú, en primera persona, y se dirige a negocios, empresas en crecimiento y escuelas de México. El contexto de marca y ADR-004 indicaban tratamiento de usted, presentación como estudio y público pyme. El diseño está construido sobre ese texto: el título "Dime qué te duele." es el elemento visual principal.
@@ -228,6 +230,31 @@ Opción 1. El sitio habla de tú y en primera persona, se presenta como una sola
 - ADR-004 sigue vigente salvo el tratamiento: el sitio existe en español y en inglés.
 - La propuesta de valor (sección 4 del contexto de marca) y el enfoque de casos de estudio (sección 9) quedan sin revisar frente a la nueva voz.
 - Se reconsidera si SESGO TI vuelve a presentarse como estudio o agencia, o si el público principal deja de ser negocios y escuelas.
+
+## ADR-008 — Título principal de la landing
+
+**Estado:** Vigente (aprobado por el responsable; actualiza un detalle de ADR-007)
+
+**Fecha:** noviembre de 2026
+
+### Contexto
+
+ADR-007 adoptó el texto del prototipo, cuyo título era "Dime qué te duele." y fungía como elemento visual principal. El responsable pidió reemplazarlo.
+
+### Opciones consideradas
+
+1. Mantener "Dime qué te duele.".
+2. Usar "Todo problema tiene un ángulo, yo encuentro el tuyo." con "ángulo" y "tuyo" resaltadas.
+
+### Decisión
+
+Opción 2. El título se muestra en tres líneas y las dos palabras clave van en cursiva y en el color de acento (Danube). La versión en inglés, "Every problem has an angle, I find yours.", es una traducción propuesta y está pendiente de revisión por el responsable.
+
+### Implicaciones
+
+- ADR-007 sigue vigente en voz (tú, primera persona) y posicionamiento; solo cambia el título.
+- La etiqueta del formulario "¿Qué te duele?" no cambió y puede quedar desalineada con el nuevo título; está pendiente de decidir.
+- Si el título vuelve a cambiar, basta con editar `hero.lines` en `src/i18n/landing.ts`; las palabras entre asteriscos se resaltan.
 
 ## Regla para nuevos ADRs
 

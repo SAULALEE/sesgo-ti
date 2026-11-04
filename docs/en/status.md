@@ -30,7 +30,7 @@
 
 ## Current decisions
 
-ADR-001 (updated), ADR-002, ADR-003, ADR-004, ADR-005 (anti-spam with Cloudflare Turnstile), ADR-006 (static site with a single server endpoint), and ADR-007 (landing page voice and positioning). See [decisions.md](decisions.md).
+ADR-001 (updated), ADR-002, ADR-003, ADR-004, ADR-005 (anti-spam with Cloudflare Turnstile), ADR-006 (static site with a single server endpoint), ADR-007 (landing page voice and positioning), and ADR-008 (landing page headline). See [decisions.md](decisions.md).
 
 ## Pending work
 

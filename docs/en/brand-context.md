@@ -42,7 +42,7 @@ The main action is **submitting the contact form** (ADR-001). _Pending: how succ
 
 ## 6. Tone and voice
 
-Warm, clear, and direct, in the first person. Avoids technical terms, inflated startup jargon ("disruptive", "synergy"), and an aggressive sales tone. The reader is addressed informally (**tú** in Spanish) (ADR-007). Example register: "Dime qué te duele." ("Tell me what hurts.")
+Warm, clear, and direct, in the first person. Avoids technical terms, inflated startup jargon ("disruptive", "synergy"), and an aggressive sales tone. The reader is addressed informally (**tú** in Spanish) (ADR-007). Example register: "Todo problema tiene un ángulo, yo encuentro el tuyo." ("Every problem has an angle, I find yours.") (ADR-008)
 
 ## 7. Site language(s)
 
