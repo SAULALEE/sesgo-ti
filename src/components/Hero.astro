@@ -15,7 +15,11 @@ const location = site.city ? `${site.city}, ${hero.country}` : hero.country;
 // Each letter gets a staggered entrance; the delay continues across both lines.
 let letterIndex = 0;
 const lines = hero.lines.map((line) =>
-  [...line].map((char) => (char === ' ' ? null : { char, delay: 160 + letterIndex++ * 55 })),
+  line.split('*').flatMap((part, i) =>
+    [...part].map((char) =>
+      char === ' ' ? null : { char, accent: i % 2 === 1, delay: 160 + letterIndex++ * 55 },
+    ),
+  ),
 );
 ---
 
@@ -30,7 +34,10 @@ const lines = hero.lines.map((line) =>
         <span class="hero__line" aria-hidden="true">
           {line.map((letter) =>
             letter ? (
-              <span class="hero__build" style={`animation-delay:${letter.delay}ms`}>
+              <span
+                class:list={['hero__build', { 'hero__accent': letter.accent }]}
+                style={`animation-delay:${letter.delay}ms`}
+              >
                 <span data-l>{letter.char}</span>
               </span>
             ) : (

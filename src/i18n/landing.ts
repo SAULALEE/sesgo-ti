@@ -32,9 +32,10 @@ const es = {
     { href: '#contacto', label: 'Escríbeme' },
   ],
   hero: {
-    title: 'Dime qué te duele.',
-    lines: ['Dime qué', 'te duele.'],
-    size: '22.5vw',
+    title: 'Todo problema tiene un ángulo, yo encuentro el tuyo.',
+    // Words between asterisks are highlighted.
+    lines: ['Todo problema', 'tiene un *ángulo*,', 'yo encuentro el *tuyo*.'],
+    size: '12vw',
     leadStrong: 'Diseño y programo software a la medida.',
     lead: 'Aplicaciones, sitios web, sistemas de gestión y automatización con IA para negocios, empresas que están creciendo y escuelas de México. Tú me cuentas qué no funciona; yo lo construyo.',
     cta: 'Escríbeme',
@@ -315,9 +316,9 @@ const en: typeof es = {
     { href: '#contacto', label: 'Write to me' },
   ],
   hero: {
-    title: 'Tell me what hurts.',
-    lines: ['Tell me', 'what hurts.'],
-    size: '19.5vw',
+    title: 'Every problem has an angle, I find yours.',
+    lines: ['Every problem', 'has an *angle*,', 'I find *yours*.'],
+    size: '12vw',
     leadStrong: 'I design and build custom software.',
     lead: 'Apps, websites, management systems, and AI automation for small businesses, growing companies, and schools in Mexico. You tell me what isn’t working; I build the fix.',
     cta: 'Write to me',
