@@ -18,7 +18,7 @@ Consult the relevant sources before beginning work that depends on them.
 
 ### Project instructions
 - `CLAUDE.md`: Global project instructions (this file).
-- `.claude/skills/`: Reusable procedures and specialized guidance. The index is `.claude/skills/README.md`.
+- `.claude/skills/`: Reusable procedures and specialized guidance. Each skill lives in its own folder with a `SKILL.md`.
 
 ### Project documentation
 

@@ -8,22 +8,23 @@ Technical context (ADR-001): SESGO TI needs a landing page to attract external c
 
 ## 1. What SESGO TI is
 
-Presents itself as a **studio / agency**, although development is currently done by a single person (ADR-001). _Pending: description in one or two sentences._
+Presents itself as **one person who designs and builds** custom software (ADR-007). _Pending: description in one or two sentences._
 
 ## 2. Target audience
 
-**SMBs** (small and medium-sized businesses). _Pending: industry and role of the decision maker._
+**Small businesses, growing companies, and public and private schools in Mexico** (ADR-007). _Pending: role of the decision maker._
 
 ## 3. Services
 
 **What is shown:**
 
-- Cross-platform software development.
-- Custom ERPs.
-- AI integration and automation.
-- Product design (UX/UI).
+- Management systems.
+- Apps.
+- Websites.
+- AI automation.
+- Product design.
 
-**Focus of the detail:** architecture, problem solving, and business impact, rather than generic technology lists. Services are shown through the process: **Diagnosis → Design → Engineering → Deployment**.
+**Focus of the detail:** the client's everyday problems and interactive demos, rather than generic technology lists. The process is shown in four steps: **You tell me how you work → You see it before it's built → It gets built in parts → You end up with something you understand** (ADR-007).
 
 **Pricing and packages:** no public prices and no rigid packages. Engagement models:
 
@@ -41,7 +42,7 @@ The main action is **submitting the contact form** (ADR-001). _Pending: how succ
 
 ## 6. Tone and voice
 
-Sober, cultured, precise, mature, and direct. Avoids inflated startup jargon ("disruptive", "synergy") and an aggressive sales tone. Speaks with elegance and technical solidity. The reader is addressed formally (**usted** in Spanish). Example register: "Hablemos de su siguiente arquitectura" ("Let's talk about your next architecture").
+Warm, clear, and direct, in the first person. Avoids technical terms, inflated startup jargon ("disruptive", "synergy"), and an aggressive sales tone. The reader is addressed informally (**tú** in Spanish) (ADR-007). Example register: "Dime qué te duele." ("Tell me what hurts.")
 
 ## 7. Site language(s)
 

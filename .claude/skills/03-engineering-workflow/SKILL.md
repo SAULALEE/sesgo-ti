@@ -26,6 +26,7 @@ description: Use when planning, implementing, debugging, refactoring, maintainin
 - Prioritize simple, readable, and maintainable solutions.
 - Avoid duplication and unjustified abstractions.
 - Limit changes to the necessary scope.
+- Write styles in separate CSS files and follow `10-styling-and-visual-design` for any visible change.
 - Protect existing work and project data.
 
 ## 4. Verification
