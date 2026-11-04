@@ -1,0 +1,127 @@
+.inventory__scene {
+  display: flex;
+  flex-direction: column;
+  grid-area: 1 / 1;
+  align-items: flex-end;
+  gap: 18px;
+  min-width: 0;
+}
+.inventory {
+  width: min(100%, 540px);
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: 0 50px 90px -40px rgb(27 34 50 / 0.75);
+}
+.inventory__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+.inventory__title {
+  font-weight: 600;
+}
+.inventory__live {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-soft);
+  white-space: nowrap;
+}
+.inventory__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  animation: sgPulse 1.6s ease-in-out infinite;
+}
+.inventory__sales {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  margin: 14px 0 16px;
+}
+.inventory__count {
+  font-family: var(--font-display);
+  font-size: 68px;
+  font-variant-numeric: tabular-nums;
+  line-height: 0.9;
+}
+.inventory__hint {
+  color: var(--color-text-soft);
+  font-size: 14px;
+}
+.inventory__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(36px, 76px) 28px 54px;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 12px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-align: left;
+}
+.row.is-flash {
+  background: var(--color-flash);
+}
+.row__name {
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.row__bar {
+  display: block;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: rgb(223 221 219 / 0.14);
+}
+.row__bar span {
+  display: block;
+  height: 100%;
+  background: var(--color-accent);
+  transform-origin: 0 50%;
+  transition: transform 0.6s var(--ease-soft);
+}
+.row__stock {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  text-align: right;
+}
+.row__chip {
+  justify-self: end;
+  padding: 3px 9px;
+  border-radius: 999px;
+  color: var(--color-text-soft);
+  font-size: 12px;
+  font-weight: 600;
+}
+.row.is-low .row__chip {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+.inventory__log {
+  min-height: 42px;
+  margin-top: 14px;
+  padding: 11px 13px;
+  border-radius: 12px;
+  background: var(--color-field);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.inventory__note {
+  width: min(100%, 470px);
+  background: var(--color-text);
+  color: var(--color-bg);
+}

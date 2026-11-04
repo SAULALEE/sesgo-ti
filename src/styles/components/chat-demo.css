@@ -1,0 +1,116 @@
+.chat__scene {
+  display: flex;
+  flex-wrap: wrap;
+  grid-area: 1 / 1;
+  align-content: flex-start;
+  align-items: flex-start;
+  gap: 18px 28px;
+  min-width: 0;
+}
+.chat {
+  width: min(100%, 480px);
+  padding: clamp(16px, 2vw, 22px);
+  background: var(--color-text);
+  color: var(--color-bg);
+  box-shadow: 0 50px 90px -40px rgb(0 0 0 / 0.6);
+}
+.chat__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.chat__title {
+  font-size: 15px;
+  font-weight: 600;
+}
+.chat__subtitle {
+  margin-top: 2px;
+  color: var(--color-ink-soft);
+  font-size: 13px;
+}
+.chat__stat {
+  text-align: right;
+}
+.chat__count {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.chat__counter {
+  color: var(--color-ink-soft);
+  font-size: 12px;
+}
+.chat__log {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 8px;
+  height: 258px;
+  margin: 14px 0 12px;
+  padding: 12px;
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--color-paper);
+}
+.chat__log .chat__msg {
+  flex: none;
+  align-self: flex-start;
+  max-width: 84%;
+  padding: 10px 13px;
+  border-radius: 16px 16px 16px 4px;
+  background: var(--color-bubble);
+  color: var(--color-bg);
+  font-size: 14px;
+  line-height: 1.4;
+  animation: sgUp 0.5s var(--ease-out) both;
+}
+.chat__log .chat__msg--me {
+  align-self: flex-end;
+  border-radius: 16px 16px 4px 16px;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+.chat__typing {
+  flex: none;
+  align-self: flex-end;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 13px;
+  animation: sgPulse 1s ease-in-out infinite;
+}
+.chat__ask {
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.chat__quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chat__chip {
+  padding: 9px 13px;
+  border-radius: 999px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 500;
+}
+.chat__note {
+  width: min(100%, 400px);
+  margin-top: clamp(0px, 12vh, 150px);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+.chat__note-kicker {
+  color: var(--color-text-soft);
+}
+.chat__note-cta {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
