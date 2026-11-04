@@ -1,0 +1,62 @@
+---
+import '../../styles/components/chat-demo.css';
+import { landing } from '../../i18n/landing';
+import type { Locale } from '../../i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const { chat, cases, cursor } = landing[lang];
+---
+
+<div class="chat__scene" data-scene-c="2" style="visibility:hidden">
+  <div
+    class="case-card chat"
+    data-piece
+    data-tone="light"
+    data-chat
+    data-auto={JSON.stringify(chat.auto)}
+    data-quick={JSON.stringify(chat.quick)}
+  >
+    <div class="chat__head">
+      <div>
+        <p class="chat__title">{chat.title}</p>
+        <p class="chat__subtitle">{chat.subtitle}</p>
+      </div>
+      <span class="chat__stat">
+        <span class="chat__count" data-chat-count>0</span>
+        <span class="chat__counter">{chat.counter}</span>
+      </span>
+    </div>
+    <div class="chat__log" data-chat-log>
+      <div class="chat__typing" data-typing hidden>{chat.typing}</div>
+    </div>
+    <p class="chat__ask">{chat.askYou}</p>
+    <div class="chat__quick">
+      {
+        chat.quick.map((item, i) => (
+          <button type="button" class="chat__chip" data-ask={i} data-cursor-label={cursor.ask}>
+            {item.q}
+          </button>
+        ))
+      }
+    </div>
+  </div>
+  <div class="case-note chat__note" data-piece>
+    <p class="case-kicker chat__note-kicker">{chat.audience}</p>
+    <p class="case-note__body">{chat.body}</p>
+    <a
+      class="case-cta chat__note-cta"
+      href="#contacto"
+      data-prefill={`${cases.pains[2]} `}
+      data-magnetic
+      data-cursor-label={cursor.talk}>{cases.cta}</a
+    >
+  </div>
+</div>
+
+<script>
+  import '../../scripts/chat';
+</script>

@@ -1,6 +1,9 @@
 ---
+import '../styles/components/contact-form.css';
 import { LIMITS } from '../lib/contact';
 import { useTranslations, type Locale } from '../i18n/ui';
+import { landing } from '../i18n/landing';
+import { site } from '../lib/site';
 
 interface Props {
   lang: Locale;
@@ -8,57 +11,119 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+const { cursor } = landing[lang];
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+
+const responseTime = site.responseTime[lang];
+const reply = responseTime
+  ? t('contact.replyIn').replace('{time}', responseTime)
+  : t('contact.reply');
+const footnote = [
+  responseTime && t('contact.responseTime').replace('{time}', responseTime),
+  t('contact.privacy'),
+]
+  .filter(Boolean)
+  .join(' ');
+const info = [
+  { label: t('contact.info.email'), value: site.email },
+  { label: t('contact.info.whatsapp'), value: site.whatsapp },
+  {
+    label: t('contact.info.city'),
+    value: site.city && `${site.city}, ${t('contact.info.country')}`,
+  },
+].filter((row) => row.value);
 ---
 
-<section class="contact" id="contact" aria-labelledby="contact-title">
-  <div class="container">
-    <h2 id="contact-title" class="contact__title">{t('contact.title')}</h2>
-    <p class="contact__lead">{t('contact.lead')}</p>
+<div id="contacto" class="anchor"></div>
+<section class="contact sheet" data-sheet data-tone="light" aria-labelledby="contact-title">
+  <div class="sheet__veil" aria-hidden="true"></div>
+  <h2 class="contact__title" id="contact-title" data-reveal>
+    {t('contact.titleStart')}<span>{t('contact.titleEnd')}</span>
+  </h2>
+  <div class="contact__body">
+    <div class="contact__intro">
+      <p class="contact__lead">{t('contact.lead')}</p>
+      {
+        info.length > 0 && (
+          <div class="contact__info">
+            {info.map((row) => (
+              <>
+                <span class="contact__info-label">{row.label}</span>
+                <span>{row.value}</span>
+              </>
+            ))}
+          </div>
+        )
+      }
+    </div>
+    <div class="contact__card" data-tone="dark">
+      <form
+        class="contact__form"
+        method="post"
+        action="/api/contact"
+        data-sending={t('contact.sending')}
+        data-error-invalid={t('contact.error.invalid')}
+        data-error-captcha={t('contact.error.captcha')}
+        data-error-unavailable={t('contact.error.unavailable')}
+      >
+        <input type="hidden" name="locale" value={lang} />
 
-    <form
-      class="contact__form"
-      method="post"
-      action="/api/contact"
-      data-sending={t('contact.sending')}
-      data-success={t('contact.success')}
-      data-error-invalid={t('contact.error.invalid')}
-      data-error-captcha={t('contact.error.captcha')}
-      data-error-unavailable={t('contact.error.unavailable')}
-    >
-      <input type="hidden" name="locale" value={lang} />
+        <label class="contact__field">
+          <span>{t('contact.name')}</span>
+          <input class="contact__control" type="text" name="name" required maxlength={LIMITS.name} autocomplete="name" />
+        </label>
 
-      <label>
-        <span>{t('contact.name')}</span>
-        <input type="text" name="name" required maxlength={LIMITS.name} autocomplete="name" />
-      </label>
+        <label class="contact__field">
+          <span>{t('contact.email')}</span>
+          <input
+            class="contact__control"
+            type="email"
+            name="email"
+            required
+            maxlength={LIMITS.email}
+            autocomplete="email"
+          />
+        </label>
 
-      <label>
-        <span>{t('contact.email')}</span>
-        <input
-          type="email"
-          name="email"
-          required
-          maxlength={LIMITS.email}
-          autocomplete="email"
-        />
-      </label>
+        <label class="contact__field">
+          <span>{t('contact.message')}</span>
+          <textarea
+            class="contact__control"
+            name="message"
+            required
+            rows="4"
+            minlength={LIMITS.messageMin}
+            maxlength={LIMITS.message}
+            placeholder={t('contact.messagePlaceholder')}></textarea>
+        </label>
 
-      <label>
-        <span>{t('contact.message')}</span>
-        <textarea
-          name="message"
-          required
-          rows="6"
-          minlength={LIMITS.messageMin}
-          maxlength={LIMITS.message}></textarea>
-      </label>
+        {siteKey && <div class="cf-turnstile" data-sitekey={siteKey} data-theme="dark" />}
 
-      {siteKey && <div class="cf-turnstile" data-sitekey={siteKey} data-theme="dark" />}
+        <p class="contact__status" role="status" aria-live="polite"></p>
+        <button class="contact__submit" type="submit" data-magnetic data-cursor-label={cursor.send}>
+          <span>{t('contact.submit')}</span><span aria-hidden="true">→</span>
+        </button>
+        <p class="contact__footnote">{footnote}</p>
+      </form>
 
-      <button type="submit">{t('contact.submit')}</button>
-      <p class="contact__status" role="status" aria-live="polite"></p>
-    </form>
+      <div
+        class="contact__done"
+        role="status"
+        data-done
+        data-thanks={t('contact.thanks')}
+        data-thanks-name={t('contact.thanksName')}
+        data-reply={reply}
+        hidden
+      >
+        <p class="contact__thanks" data-done-thanks></p>
+        <div class="contact__next">
+          <p class="contact__reply" data-done-reply></p>
+          <button class="contact__again" type="button" data-again data-cursor-label={cursor.other}>
+            {t('contact.again')}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -74,9 +139,52 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 }
 
 <script>
+  import { reduced } from '../scripts/motion';
+
   const form = document.querySelector<HTMLFormElement>('.contact__form');
   const status = form?.querySelector<HTMLElement>('.contact__status');
   const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+  const done = document.querySelector<HTMLElement>('[data-done]');
+  const thanks = done?.querySelector<HTMLElement>('[data-done-thanks]');
+  const reply = done?.querySelector<HTMLElement>('[data-done-reply]');
+  let exit: Animation | undefined;
+
+  async function showDone(name: string, email: string) {
+    if (!form || !done || !thanks || !reply) return;
+    if (!reduced) {
+      exit = form.animate(
+        [
+          { transform: 'none', opacity: 1, filter: 'blur(0px)' },
+          { transform: 'translate3d(0,-50px,0) skewY(-3deg)', opacity: 0, filter: 'blur(8px)' },
+        ],
+        { duration: 420, easing: 'cubic-bezier(.7,0,.84,0)', fill: 'forwards' },
+      );
+      await exit.finished;
+    }
+    thanks.textContent = name
+      ? (done.dataset.thanksName ?? '').replace('{name}', name)
+      : (done.dataset.thanks ?? '');
+    reply.textContent = (done.dataset.reply ?? '').replace('{email}', email);
+    form.hidden = true;
+    done.hidden = false;
+  }
+
+  function showForm() {
+    if (!form || !done) return;
+    exit?.cancel();
+    form.hidden = false;
+    done.hidden = true;
+  }
+
+  done?.querySelector('[data-again]')?.addEventListener('click', showForm);
+
+  // Case and service links prefill the message (scripts/prefill.ts).
+  window.addEventListener('contact:prefill', (event) => {
+    const field = form?.elements.namedItem('message');
+    if (!(field instanceof HTMLTextAreaElement)) return;
+    showForm();
+    field.value = (event as CustomEvent<string>).detail;
+  });
 
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -87,10 +195,12 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 
     let message = form.dataset.errorUnavailable ?? '';
     try {
-      const res = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+      const data = new FormData(form);
+      const res = await fetch(form.action, { method: 'POST', body: data });
       const result = (await res.json()) as { ok: boolean; error?: string };
       if (result.ok) {
-        message = form.dataset.success ?? '';
+        message = '';
+        await showDone(String(data.get('name')).trim(), String(data.get('email')).trim());
         form.reset();
       } else if (result.error === 'invalid') {
         message = form.dataset.errorInvalid ?? '';
@@ -111,67 +221,3 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     }
   });
 </script>
-
-<style>
-  .contact {
-    padding-block: clamp(3rem, 8vw, 6rem);
-    border-top: 1px solid var(--color-line);
-  }
-  .contact__title {
-    font-size: clamp(2rem, 5vw, 3.25rem);
-    color: var(--color-accent);
-  }
-  .contact__lead {
-    margin: 1rem 0 0;
-    max-width: 38rem;
-    color: var(--color-text-muted);
-  }
-  .contact__form {
-    display: grid;
-    gap: 1.25rem;
-    max-width: 36rem;
-    margin-top: 2.5rem;
-  }
-  label {
-    display: grid;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    color: var(--color-text-muted);
-  }
-  input,
-  textarea {
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--color-line);
-    background: transparent;
-    color: var(--color-text);
-    font: inherit;
-  }
-  input:focus-visible,
-  textarea:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-  }
-  button {
-    justify-self: start;
-    padding: 0.875rem 1.5rem;
-    border: 1px solid var(--color-text);
-    background: transparent;
-    color: var(--color-text);
-    font: inherit;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.15s, color 0.15s;
-  }
-  button:hover:not(:disabled) {
-    background: var(--color-text);
-    color: var(--color-bg);
-  }
-  button:disabled {
-    opacity: 0.6;
-    cursor: wait;
-  }
-  .contact__status {
-    margin: 0;
-    min-height: 1.6em;
-  }
-</style>

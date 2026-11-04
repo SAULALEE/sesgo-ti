@@ -1,0 +1,81 @@
+.idea__scene {
+  display: flex;
+  flex-direction: column;
+  grid-area: 1 / 1;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  min-width: 0;
+}
+.idea__note {
+  width: min(100%, 430px);
+  background: var(--color-deep);
+  color: var(--color-text);
+}
+.idea {
+  align-self: flex-end;
+  width: min(100%, 520px);
+  background: var(--color-text);
+  color: var(--color-bg);
+  box-shadow: 0 50px 90px -40px rgb(11 14 21 / 0.7);
+}
+.idea__label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.idea__input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 14px;
+  outline-offset: 2px;
+  background: var(--color-paper);
+  color: var(--color-bg);
+  font-family: var(--font-display);
+  font-size: 26px;
+  line-height: 1.15;
+}
+.idea__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 16px;
+}
+.idea__chip {
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--color-paper);
+  color: var(--color-bg);
+  font-size: 13px;
+}
+.idea__intro {
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.idea__questions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.idea__questions li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--color-paper);
+  font-size: 14px;
+  line-height: 1.4;
+}
+.idea__questions span {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-style: italic;
+  line-height: 0.9;
+}

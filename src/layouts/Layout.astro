@@ -13,12 +13,9 @@ const lang: Locale = locales.find((l) => l === Astro.currentLocale) ?? defaultLo
 const t = useTranslations(lang);
 const { title = t('site.title'), description = t('site.description') } = Astro.props;
 
-const otherLocale: Locale = lang === 'es' ? 'en' : 'es';
 const pathname = Astro.url.pathname;
 const pathInLocale =
   lang === defaultLocale ? pathname : pathname.replace(/^\/en(?=\/|$)/, '') || '/';
-const switchHref = getRelativeLocaleUrl(otherLocale, pathInLocale);
-const homeHref = getRelativeLocaleUrl(lang, '/');
 
 // Absolute URLs need `site` (SITE_URL at build time); there is no production domain yet.
 const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href : undefined);
@@ -28,7 +25,7 @@ const alternates = locales.map((l) => ({
   href: absolute(getRelativeLocaleUrl(l, pathInLocale)),
 }));
 const defaultAlternate = absolute(getRelativeLocaleUrl(defaultLocale, pathInLocale));
-const ogLocale = { es: 'es_ES', en: 'en_US' }[lang];
+const ogLocale = { es: 'es_MX', en: 'en_US' }[lang];
 ---
 
 <!doctype html>
@@ -58,59 +55,8 @@ const ogLocale = { es: 'es_ES', en: 'en_US' }[lang];
     <Font cssVariable="--font-inter" />
   </head>
   <body>
-    <header class="site-header">
-      <div class="container site-header__inner">
-        <a class="wordmark" href={homeHref}>SESGO TI</a>
-        <nav aria-label={t('nav.language')}>
-          <a class="lang-switch" href={switchHref} hreflang={otherLocale} lang={otherLocale}>
-            {t('nav.switchTo')}
-          </a>
-        </nav>
-      </div>
-    </header>
-    <main>
+    <div class="page">
       <slot />
-    </main>
-    <footer class="site-footer">
-      <div class="container">
-        <small>© {new Date().getFullYear()} SESGO TI. {t('footer.rights')}</small>
-      </div>
-    </footer>
+    </div>
   </body>
 </html>
-
-<style>
-  .site-header {
-    border-bottom: 1px solid var(--color-line);
-  }
-  .site-header__inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding-block: 1.25rem;
-  }
-  .wordmark {
-    font-family: var(--font-display);
-    font-size: 1.75rem;
-    line-height: 1;
-    text-decoration: none;
-    letter-spacing: 0.01em;
-  }
-  .lang-switch {
-    font-size: 0.875rem;
-    color: var(--color-text-muted);
-    text-underline-offset: 0.25em;
-  }
-  .lang-switch:hover {
-    color: var(--color-text);
-  }
-  main {
-    flex: 1;
-  }
-  .site-footer {
-    border-top: 1px solid var(--color-line);
-    padding-block: 1.5rem;
-    color: var(--color-text-muted);
-  }
-</style>

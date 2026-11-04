@@ -1,0 +1,34 @@
+---
+import '../styles/components/site-footer.css';
+import { landing } from '../i18n/landing';
+import type { Locale } from '../i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const { nav, footer, cursor } = landing[lang];
+---
+
+<footer class="footer" data-tone="dark">
+  <div class="footer__top">
+    <nav class="footer__nav" aria-label={footer.label}>
+      {nav.map((item) => <a href={item.href} data-cursor-label={cursor.go}>{item.label}</a>)}
+    </nav>
+    <div class="footer__meta">
+      <span class="footer__time">{footer.time} <span data-clock></span></span>
+      <span>© {new Date().getFullYear()} SESGO TI</span>
+      <a class="footer__up" href="#inicio" data-cursor-label={cursor.up}>{footer.top}</a>
+    </div>
+  </div>
+  <div class="footer__word" aria-hidden="true">
+    {[...'SESGO'].map((c) => <span data-l>{c}</span>)}<span class="footer__gap"></span>{
+      [...'TI'].map((c) => (
+        <span data-l class="footer__accent">
+          {c}
+        </span>
+      ))
+    }
+  </div>
+</footer>

@@ -59,8 +59,8 @@ export async function verifyTurnstile(
     body,
   });
   if (!res?.ok) return false;
-  const result = (await res.json()) as { success?: boolean };
-  return result.success === true;
+  const result = (await res.json().catch(() => null)) as { success?: boolean } | null;
+  return result?.success === true;
 }
 
 export async function saveMessage(config: ContactConfig, input: ContactInput): Promise<boolean> {

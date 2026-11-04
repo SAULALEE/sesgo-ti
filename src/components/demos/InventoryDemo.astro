@@ -1,0 +1,73 @@
+---
+import '../../styles/components/inventory-demo.css';
+import { landing } from '../../i18n/landing';
+import type { Locale } from '../../i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const { inventory, cases, cursor } = landing[lang];
+const strings = {
+  sold: inventory.sold,
+  reorder: inventory.reorder,
+  restock: inventory.restock,
+  statusOk: inventory.statusOk,
+  statusLow: inventory.statusLow,
+};
+---
+
+<div class="inventory__scene" data-scene-c="0">
+  <div
+    class="case-card inventory"
+    data-piece
+    data-tone="dark"
+    data-inventory
+    data-items={JSON.stringify(inventory.items)}
+    data-strings={JSON.stringify(strings)}
+  >
+    <div class="inventory__head">
+      <span class="inventory__title">{inventory.title}</span>
+      <span class="inventory__live"><span class="inventory__dot"></span>{inventory.live}</span>
+    </div>
+    <div class="inventory__sales">
+      <span class="inventory__count" data-sales>0</span>
+      <span class="inventory__hint">{inventory.salesHint}</span>
+    </div>
+    <div class="inventory__rows">
+      {
+        inventory.items.map((item, i) => (
+          <button type="button" class="row" data-row={i} data-cursor-label={cursor.sell}>
+            <span class="row__name">{item.n}</span>
+            <span class="row__bar">
+              <span data-bar style={`transform:scaleX(${(item.s / item.max).toFixed(3)})`} />
+            </span>
+            <span class="row__stock" data-stock>
+              {item.s}
+            </span>
+            <span class="row__chip" data-chip>
+              {inventory.statusOk}
+            </span>
+          </button>
+        ))
+      }
+    </div>
+    <p class="inventory__log" aria-live="polite" data-log>{inventory.idle}</p>
+  </div>
+  <div class="case-note inventory__note" data-piece>
+    <p class="case-kicker">{inventory.audience}</p>
+    <p class="case-note__body">{inventory.body}</p>
+    <a
+      class="case-cta"
+      href="#contacto"
+      data-prefill={`${cases.pains[0]} `}
+      data-magnetic
+      data-cursor-label={cursor.talk}>{cases.cta}</a
+    >
+  </div>
+</div>
+
+<script>
+  import '../../scripts/inventory';
+</script>

@@ -1,0 +1,73 @@
+---
+import '../styles/components/cases.css';
+import ChatDemo from './demos/ChatDemo.astro';
+import IdeaDemo from './demos/IdeaDemo.astro';
+import InventoryDemo from './demos/InventoryDemo.astro';
+import SchoolDemo from './demos/SchoolDemo.astro';
+import { landing } from '../i18n/landing';
+import type { Locale } from '../i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const { cases, cursor } = landing[lang];
+---
+
+<div id="caso" class="anchor"></div>
+<section
+  class="stage sheet"
+  data-sheet
+  data-stage
+  data-scene="0"
+  data-tone="light"
+  data-live-prefix={cases.live}
+  aria-label={cases.label}
+>
+  <div class="sheet__veil" aria-hidden="true"></div>
+  <div class="plates" aria-hidden="true">
+    {
+      cases.words.map((word, i) => (
+        <div class={`plate plate--${i}`} data-plate={i}>
+          <div class="plate__word" data-word>
+            {word}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+  <div class="stage__body">
+    <div class="picker" data-tone="dark">
+      <h2 class="picker__title">{cases.question}</h2>
+      <div class="picker__list">
+        {
+          cases.pains.map((pain, i) => (
+            <button
+              type="button"
+              class="picker__option"
+              data-pick={i}
+              data-name={cases.words[i]}
+              aria-pressed={i === 0 ? 'true' : 'false'}
+              data-cursor-label={cursor.view}
+            >
+              <span class="picker__index">{String(i + 1).padStart(2, '0')}</span>
+              <span class="picker__text">{pain}</span>
+            </button>
+          ))
+        }
+      </div>
+    </div>
+    <div class="scenes">
+      <InventoryDemo lang={lang} />
+      <SchoolDemo lang={lang} />
+      <ChatDemo lang={lang} />
+      <IdeaDemo lang={lang} />
+    </div>
+  </div>
+</section>
+
+<script>
+  import '../scripts/cases';
+</script>

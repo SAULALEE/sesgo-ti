@@ -1,0 +1,60 @@
+---
+import '../styles/components/problems.css';
+import { landing } from '../i18n/landing';
+import type { Locale } from '../i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const { problems, cursor } = landing[lang];
+---
+
+<section class="problems sheet" id="te-suena" data-sheet data-tone="danube" aria-label={problems.title}>
+  <div class="sheet__veil" aria-hidden="true"></div>
+  <div class="ribbon" aria-hidden="true">
+    <div class="ribbon__track" data-ribbon>
+      <div class="ribbon__group" data-group>
+        {
+          problems.ribbon.map((item, i) => (
+            <>
+              <span class:list={{ 'is-italic': i % 2 === 1 }}>{item}</span>
+              <span class="ribbon__slash">/</span>
+            </>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+  <h2 class="problems__title" data-reveal>{problems.title}</h2>
+  <div class="wall" data-wall>
+    {
+      problems.rows.map((row) => (
+        <div class="wall__row">
+          <div
+            class:list={['wall__track', { 'wall__track--reverse': row.reverse }]}
+            style={`animation-duration:${row.duration}s`}
+          >
+            <div class="wall__group" data-group>
+              {row.items.map((item) => (
+                <>
+                  <button
+                    type="button"
+                    class:list={['wall__item', { 'is-italic': row.italic }]}
+                    data-scene={item.scene}
+                    data-cursor-label={cursor.seeFix}
+                  >
+                    {item.text}
+                  </button>
+                  <span class="wall__dot" aria-hidden="true" />
+                </>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+  <p class="problems__closing">{problems.closing}</p>
+</section>
