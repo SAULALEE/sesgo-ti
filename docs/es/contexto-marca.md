@@ -40,7 +40,7 @@ La acción principal es **enviar el formulario de contacto** (ADR-001). _Pendien
 
 ## 6. Tono y voz
 
-Cercano, claro y directo, en primera persona. Evita tecnicismos, la jerga inflada de startup ("disruptivo", "sinergia") y el tono comercial agresivo. Se trata al lector de **tú** (ADR-007). Ejemplo de registro: "Dime qué te duele."
+Cercano, claro y directo, en primera persona. Evita tecnicismos, la jerga inflada de startup ("disruptivo", "sinergia") y el tono comercial agresivo. Se trata al lector de **tú** (ADR-007). Ejemplo de registro: "Todo problema tiene un ángulo, yo encuentro el tuyo." (ADR-008)
 
 ## 7. Idioma(s) del sitio
 

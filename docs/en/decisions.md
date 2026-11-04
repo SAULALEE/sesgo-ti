@@ -211,6 +211,8 @@ Option 1. Pages stay prerendered and the `POST /api/contact` endpoint (no langua
 
 **Date:** November 2026
 
+> **Note:** the headline "Dime qué te duele." was replaced by [ADR-008](#adr-008--landing-page-headline). The text of this record is kept as written.
+
 ### Context
 
 The landing page was redesigned in Claude Design. The prototype addresses the reader informally (**tú**), in the first person, and speaks to businesses, growing companies, and schools in Mexico. The brand context and ADR-004 called for the formal **usted**, presenting as a studio, and an SMB audience. The design is built on that copy: the headline "Dime qué te duele." is the main visual element.
@@ -230,6 +232,31 @@ Option 1. The site uses tú and the first person, presents itself as one person 
 - ADR-004 stays current except for the form of address: the site exists in Spanish and English.
 - The value proposition (brand context section 4) and the case study approach (section 9) have not been reviewed against the new voice.
 - Reconsider if SESGO TI goes back to presenting as a studio or agency, or if businesses and schools stop being the main audience.
+
+## ADR-008 — Landing page headline
+
+**Status:** Current (approved by the owner; updates one detail of ADR-007)
+
+**Date:** November 2026
+
+### Context
+
+ADR-007 adopted the prototype copy, whose headline was "Dime qué te duele." ("Tell me what hurts.") and served as the main visual element. The owner asked to replace it.
+
+### Options considered
+
+1. Keep "Dime qué te duele.".
+2. Use "Todo problema tiene un ángulo, yo encuentro el tuyo." with "ángulo" and "tuyo" highlighted.
+
+### Decision
+
+Option 2. The headline is shown on three lines, and the two key words are set in italic and in the accent color (Danube). The English version, "Every problem has an angle, I find yours.", is a proposed translation and awaits the owner's review.
+
+### Implications
+
+- ADR-007 remains current for voice (informal, first person) and positioning; only the headline changes.
+- The form label "¿Qué te duele?" ("What hurts?") did not change and may no longer match the new headline; this is still to be decided.
+- If the headline changes again, edit `hero.lines` in `src/i18n/landing.ts`; words between asterisks are highlighted.
 
 ## Rule for new ADRs
 
