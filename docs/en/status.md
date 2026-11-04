@@ -48,4 +48,4 @@ ADR-001 (updated), ADR-002, ADR-003, ADR-004, ADR-005 (anti-spam with Cloudflare
 
 ## Detected discrepancies
 
-- `.claude/skills/README.md` is in git but deleted from the working tree. Pending confirmation of whether this was intentional.
+- None pending. `.claude/skills/README.md` was removed on purpose; each skill is described in its own `SKILL.md`.

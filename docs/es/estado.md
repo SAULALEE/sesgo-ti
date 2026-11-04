@@ -46,4 +46,4 @@ ADR-001 (actualizado), ADR-002, ADR-003, ADR-004, ADR-005 (antispam con Cloudfla
 
 ## Discrepancias detectadas
 
-- `.claude/skills/README.md` está en git pero eliminado del working tree. Pendiente confirmar si fue intencional.
+- Ninguna pendiente. `.claude/skills/README.md` se eliminó a propósito; cada skill se describe en su `SKILL.md`.
