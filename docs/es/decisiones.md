@@ -133,7 +133,7 @@ Se usa el enrutamiento de internacionalización de Astro con `defaultLocale: "es
 
 - La opción 1 evita una redirección en `/` y mantiene las URLs en español sin prefijo.
 - Cada página nueva debe existir en ambos idiomas; el contenido se duplica y debe mantenerse sincronizado.
-- El texto en español usa tratamiento de **usted**.
+- El texto en español usa tratamiento de **usted**. _Actualizado por [ADR-007](#adr-007--voz-y-posicionamiento-de-la-landing): el sitio usa **tú**. El resto de este registro sigue vigente._
 - Las opciones de rutas personalizadas por idioma exigen `output: "server"` y que no haya páginas prerenderizadas, según la documentación; no se usan aquí.
 - Selector de idioma, etiquetas `hreflang` y `lang` del `<html>` por idioma se resuelven al implementar el layout y el SEO base.
 
@@ -202,6 +202,32 @@ Opción 1. Las páginas siguen prerenderizadas y el endpoint `POST /api/contact`
 - Es compatible con ADR-004: la internacionalización usada no exige `output: "server"`.
 - **No verificado:** que el endpoint (verificación de Turnstile, inserción en Supabase y envío con Resend) cumpla el límite de 10 ms de CPU. Debe medirse al implementarlo.
 - Se reconsidera si el proyecto necesita muchas páginas renderizadas por petición, por ejemplo con la gestión de clientes mencionada en ADR-002.
+
+## ADR-007 — Voz y posicionamiento de la landing
+
+**Estado:** Vigente (aprobado por el responsable; actualiza el tratamiento de ADR-004)
+
+**Fecha:** noviembre de 2026
+
+### Contexto
+
+La landing se rediseñó en Claude Design. El prototipo le habla al lector de tú, en primera persona, y se dirige a negocios, empresas en crecimiento y escuelas de México. El contexto de marca y ADR-004 indicaban tratamiento de usted, presentación como estudio y público pyme. El diseño está construido sobre ese texto: el título "Dime qué te duele." es el elemento visual principal.
+
+### Opciones consideradas
+
+1. Adoptar el texto del prototipo y registrar el cambio de marca.
+2. Migrar solo lo visual y reescribir todo el texto en usted y como estudio.
+
+### Decisión
+
+Opción 1. El sitio habla de tú y en primera persona, se presenta como una sola persona que diseña y programa, y se dirige a negocios, empresas en crecimiento y escuelas de México. Los servicios y el proceso se muestran como en el prototipo.
+
+### Implicaciones
+
+- Se actualizan las secciones 1, 2, 3 y 6 de [contexto-marca.md](contexto-marca.md). Paleta y tipografías no cambian.
+- ADR-004 sigue vigente salvo el tratamiento: el sitio existe en español y en inglés.
+- La propuesta de valor (sección 4 del contexto de marca) y el enfoque de casos de estudio (sección 9) quedan sin revisar frente a la nueva voz.
+- Se reconsidera si SESGO TI vuelve a presentarse como estudio o agencia, o si el público principal deja de ser negocios y escuelas.
 
 ## Regla para nuevos ADRs
 

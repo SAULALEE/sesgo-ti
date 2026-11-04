@@ -135,7 +135,7 @@ Astro's internationalization routing is used with `defaultLocale: "es"`, `locale
 
 - Option 1 avoids a redirect at `/` and keeps Spanish URLs unprefixed.
 - Every new page must exist in both languages; content is duplicated and must be kept in sync.
-- Spanish copy uses the formal **usted** form of address.
+- Spanish copy uses the formal **usted** form of address. _Updated by [ADR-007](#adr-007--landing-page-voice-and-positioning): the site uses **tú**. The rest of this record remains current._
 - Custom per-locale paths require `output: "server"` and no prerendered pages, according to the documentation; they are not used here.
 - Language switcher, `hreflang` tags, and per-language `<html lang>` are handled when implementing the layout and base SEO.
 
@@ -204,6 +204,32 @@ Option 1. Pages stay prerendered and the `POST /api/contact` endpoint (no langua
 - Compatible with ADR-004: the internationalization used does not require `output: "server"`.
 - **Not verified:** that the endpoint (Turnstile verification, Supabase insert, and Resend send) fits the 10 ms CPU limit. It must be measured during implementation.
 - Reconsider if the project needs many pages rendered per request, for example with the client management mentioned in ADR-002.
+
+## ADR-007 — Landing page voice and positioning
+
+**Status:** Current (approved by the project owner; updates the form of address in ADR-004)
+
+**Date:** November 2026
+
+### Context
+
+The landing page was redesigned in Claude Design. The prototype addresses the reader informally (**tú**), in the first person, and speaks to businesses, growing companies, and schools in Mexico. The brand context and ADR-004 called for the formal **usted**, presenting as a studio, and an SMB audience. The design is built on that copy: the headline "Dime qué te duele." is the main visual element.
+
+### Options considered
+
+1. Adopt the prototype's copy and record the brand change.
+2. Migrate only the visuals and rewrite all copy using usted and a studio voice.
+
+### Decision
+
+Option 1. The site uses tú and the first person, presents itself as one person who designs and builds, and speaks to businesses, growing companies, and schools in Mexico. Services and process are shown as in the prototype.
+
+### Implications
+
+- Sections 1, 2, 3, and 6 of [brand-context.md](brand-context.md) are updated. Palette and typography do not change.
+- ADR-004 stays current except for the form of address: the site exists in Spanish and English.
+- The value proposition (brand context section 4) and the case study approach (section 9) have not been reviewed against the new voice.
+- Reconsider if SESGO TI goes back to presenting as a studio or agency, or if businesses and schools stop being the main audience.
 
 ## Rule for new ADRs
 

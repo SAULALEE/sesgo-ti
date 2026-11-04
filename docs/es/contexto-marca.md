@@ -6,22 +6,23 @@ Contexto técnico (ADR-001): SESGO TI necesita una landing page de captación de
 
 ## 1. Qué es SESGO TI
 
-Se presenta como **estudio / agencia**, aunque hoy el desarrollo lo realiza una sola persona (ADR-001). _Pendiente: descripción en una o dos frases._
+Se presenta como **una sola persona que diseña y programa** software a la medida (ADR-007). _Pendiente: descripción en una o dos frases._
 
 ## 2. Público objetivo
 
-**Pymes** (pequeñas y medianas empresas). _Pendiente: sector y rol de quien decide._
+**Negocios pequeños, empresas en crecimiento y escuelas públicas y privadas de México** (ADR-007). _Pendiente: rol de quien decide._
 
 ## 3. Servicios
 
 **Qué se muestra:**
 
-- Desarrollo de software multiplataforma.
-- ERPs a medida.
-- Integración de IA y automatizaciones.
-- Diseño de producto (UX/UI).
+- Sistemas de gestión.
+- Aplicaciones.
+- Sitios web.
+- Automatización con IA.
+- Diseño de producto.
 
-**Enfoque del detalle:** arquitectura, resolución de problemas e impacto de negocio, en lugar de listas genéricas de tecnologías. Los servicios se muestran a través del proceso: **Diagnóstico → Diseño → Ingeniería → Despliegue**.
+**Enfoque del detalle:** problemas cotidianos del cliente y demos interactivas, en lugar de listas genéricas de tecnologías. El proceso se muestra en cuatro pasos: **Me cuentas cómo trabajas → Lo ves antes de construirlo → Se construye por partes → Te quedas con algo que entiendes** (ADR-007).
 
 **Precios y paquetes:** sin precios públicos ni paquetes rígidos. Modalidades de contratación:
 
@@ -39,7 +40,7 @@ La acción principal es **enviar el formulario de contacto** (ADR-001). _Pendien
 
 ## 6. Tono y voz
 
-Sobrio, culto, preciso, maduro y directo. Evita la jerga inflada de startup ("disruptivo", "sinergia") y el tono comercial agresivo. Habla con elegancia y solidez técnica. Se trata al lector de **usted**. Ejemplo de registro: "Hablemos de su siguiente arquitectura".
+Cercano, claro y directo, en primera persona. Evita tecnicismos, la jerga inflada de startup ("disruptivo", "sinergia") y el tono comercial agresivo. Se trata al lector de **tú** (ADR-007). Ejemplo de registro: "Dime qué te duele."
 
 ## 7. Idioma(s) del sitio
 
