@@ -99,7 +99,7 @@
   white-space: nowrap;
   pointer-events: auto;
 }
-@media (max-width: 700px) {
+@media (max-width: 900px) {
   .glass {
     display: none;
   }
@@ -111,7 +111,6 @@
   z-index: 110;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   gap: clamp(24px, 5vh, 56px);
   padding: 96px clamp(16px, 3vw, 44px) clamp(24px, 5vh, 48px);
   overflow: auto;
@@ -130,9 +129,11 @@
     clip-path 0.9s var(--ease-inout),
     visibility 0s linear 0s;
 }
+/* margin-top:auto bottom-aligns the list while keeping overflow scrollable from the top. */
 .menu__nav {
   display: flex;
   flex-direction: column;
+  margin-top: auto;
 }
 .menu__link {
   display: flex;
@@ -140,7 +141,8 @@
   gap: clamp(12px, 2vw, 28px);
   padding-left: clamp(0px, calc(var(--i) * 6vw), calc(var(--i) * 120px));
   font-family: var(--font-display);
-  font-size: clamp(58px, 10.5vw, 190px);
+  /* Largest size at which the 6 links still fit: (viewport - padding, gaps, and footer row) / (6 lines at 0.95). */
+  font-size: clamp(58px, min(10.5vw, (100svh - 216px) / 5.7), 190px);
   line-height: 0.95;
   letter-spacing: -0.03em;
   opacity: 0;
