@@ -1,18 +1,19 @@
 # Estado del proyecto
 
-**Última actualización:** octubre de 2026
+**Última actualización:** noviembre de 2026
 
 ## Estado verificado
 
 - Proyecto Astro 7.4.1 con `@astrojs/cloudflare` 14.4.1 y `wrangler` instalados. Gestor de paquetes: bun.
 - `astro.config.mjs` registra el adaptador `cloudflare()`, la internacionalización (ADR-004), las fuentes de marca y `site` desde la variable de build `SITE_URL`.
-- Implementado en `feature/landing`: layout base con selector de idioma (`/` en español y `/en` en inglés), estilos globales, hero, sección de servicios y proceso, SEO base (títulos, Open Graph, `robots.txt`; `canonical` y `hreflang` solo si se define `SITE_URL`) y formulario de contacto (componente, endpoint `POST /api/contact` y esquema en `supabase/contact_messages.sql`). Ver [arquitectura.md](arquitectura.md).
+- Implementado en `feature/landing`: layout base con selector de idioma (`/` en español y `/en` en inglés), estilos globales, hero, sección de servicios y proceso, las secciones «Un proyecto real» (Katedra, con su página real en miniatura mediante un iframe) y «Lo que cuesta», un cambio de idioma que conserva la posición de lectura con una animación de barrido, SEO base (títulos, Open Graph, `robots.txt`; `canonical` y `hreflang` solo si se define `SITE_URL`) y formulario de contacto (componente, endpoint `POST /api/contact` y esquema en `supabase/contact_messages.sql`). Ver [arquitectura.md](arquitectura.md).
 - `bun run build` pasa con y sin `SITE_URL`, y con el formulario (verificado en la rama `feature/landing`).
 - `bun run check` (`wrangler types` y `astro check`, con TypeScript 6) pasa con 0 errores, 0 advertencias y 0 sugerencias (verificado en `feature/landing`). `worker-configuration.d.ts` se genera con ese comando y no se versiona.
 - El endpoint se probó en `bun run preview` con variables falsas: responde `400 invalid` ante datos inválidos o un cuerpo que no es un formulario, `400 captcha` ante un token falso y `500 unavailable` sin variables de entorno.
 - `wrangler.jsonc` apunta a Workers con Static Assets (`main` + `assets`).
 - `.gitignore` excluye `.wrangler/` y `.dev.vars*`; `.dev.vars.example` y `.env.example` listan las variables.
-- No verificado: la integración real con Turnstile, Supabase y Resend (faltan credenciales); la ruta REST de Supabase y `turnstile.reset()`, no confirmadas en la documentación; el límite de 10 ms de CPU del endpoint; la apariencia en navegador; y `bun run dev`.
+- Verificado en navegador (noviembre de 2026): `/` y `/en` renderizan todas las secciones sin errores de consola en ventanas de 390, 768, 820 y 1440 px, sin desborde horizontal; el menú de seis enlaces cabe completo y el logotipo no se solapa con los botones del encabezado. Los tamaños se probaron cargando la página en un iframe de ese ancho. `bun run dev` responde 200 en `/` y `/en`.
+- No verificado: el formulario de contacto en navegador; Safari y Firefox (en Firefox la miniatura de Katedra usa `transform` en lugar de `zoom`); la integración real con Turnstile, Supabase y Resend (faltan credenciales); la ruta REST de Supabase y `turnstile.reset()`, no confirmadas en la documentación; y el límite de 10 ms de CPU del endpoint. La miniatura de Katedra depende de que `katedra-client.vercel.app` siga permitiendo ser incrustado.
 - No hay sitemap, `og:image`, logo ni dominio de producción.
 - El despliegue real, las previews por rama y los secretos en Cloudflare no están configurados.
 
@@ -42,4 +43,4 @@ ADR-001 (actualizado), ADR-002, ADR-003, ADR-004, ADR-005 (antispam con Cloudfla
 
 ## Discrepancias detectadas
 
-- `.claude/skills/README.md` está en git pero eliminado del working tree. Pendiente confirmar si fue intencional.
+- Ninguna abierta. `.claude/skills/README.md` está versionado y presente en el working tree (revisado el 3 de noviembre de 2026).
