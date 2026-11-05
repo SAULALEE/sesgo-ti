@@ -180,6 +180,89 @@ main {
   padding: clamp(16px, 2vw, 24px);
 }
 
+/* App-window frame of the Katedra preview. */
+.case-card.window {
+  padding: 0;
+  overflow: hidden;
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow:
+    0 0 0 1px rgb(223 221 219 / 0.14),
+    0 60px 110px -40px rgb(11 14 21 / 0.75);
+}
+
+.window__bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--color-surface);
+}
+
+.window__dots {
+  display: flex;
+  gap: 6px;
+}
+
+.window__dots i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-ink-soft);
+}
+
+.window__title {
+  min-width: 0;
+  max-width: min(320px, 44vw);
+  padding: 4px 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-field);
+  color: var(--color-text-soft);
+  font-size: 12px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Language switch: the same diagonal wipe the case plates use, in Danube. */
+html.lang-leaving::after,
+html[data-lang-enter]::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: var(--color-accent);
+  pointer-events: none;
+}
+
+html.lang-leaving::after {
+  animation: sgWipeIn 0.7s cubic-bezier(0.77, 0, 0.18, 1) both;
+}
+
+html[data-lang-enter]::after {
+  animation: sgWipeOut 0.8s cubic-bezier(0.77, 0, 0.18, 1) both;
+}
+
+@keyframes sgWipeIn {
+  from {
+    clip-path: polygon(140% 0%, 140% 0%, 140% 100%, 100% 100%);
+  }
+  to {
+    clip-path: polygon(0% 0%, 140% 0%, 140% 100%, -40% 100%);
+  }
+}
+
+@keyframes sgWipeOut {
+  from {
+    clip-path: polygon(0% 0%, 140% 0%, 140% 100%, -40% 100%);
+  }
+  to {
+    clip-path: polygon(-40% 0%, 0% 0%, -40% 100%, -40% 100%);
+  }
+}
+
 @keyframes sgBuild {
   0% {
     opacity: 0;

@@ -1,0 +1,70 @@
+---
+import '../styles/components/pricing.css';
+import { landing } from '../i18n/landing';
+import type { Locale } from '../i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const { pricing, cursor } = landing[lang];
+---
+
+<div id="precio" class="anchor"></div>
+<section class="pricing sheet" data-sheet data-tone="dark" aria-label={pricing.label}>
+  <div class="sheet__veil" aria-hidden="true"></div>
+  <div class="pricing__head">
+    <h2 class="pricing__title" data-reveal>{pricing.titleStart}<span>{pricing.titleEnd}</span></h2>
+    <p class="pricing__figure">
+      <span class="pricing__from">{pricing.fromLabel}</span>
+      <span class="pricing__value">
+        <span class="pricing__amount">{pricing.amount}</span>
+        <span class="pricing__currency">{pricing.currency}</span>
+      </span>
+    </p>
+  </div>
+  <div class="pricing__rows">
+    {
+      pricing.rows.map((row, i) => {
+        const index = String(i + 1).padStart(2, '0');
+        return (
+          <a
+            class="pricing__row"
+            href="#contacto"
+            data-prefill={`${pricing.prefill}${row.title.toLowerCase()}. `}
+            data-cursor-label={cursor.talk}
+          >
+            <div class="pricing__line">
+              <div class="pricing__name">
+                <span class="pricing__index">{index}</span>
+                <h3 class="pricing__row-title">{row.title}</h3>
+              </div>
+              <p class="pricing__row-body">{row.body}</p>
+            </div>
+            <div class="pricing__over" aria-hidden="true">
+              <div class="pricing__line">
+                <div class="pricing__name">
+                  <span class="pricing__index">{index}</span>
+                  <span class="pricing__row-title pricing__row-title--italic">{row.title}</span>
+                </div>
+                <p class="pricing__row-body">{row.body}</p>
+              </div>
+            </div>
+          </a>
+        );
+      })
+    }
+  </div>
+  <div class="pricing__foot">
+    <a
+      class="pricing__cta"
+      href="#contacto"
+      data-prefill={pricing.prefill}
+      data-magnetic
+      data-cursor-label={cursor.talk}
+    >
+      {pricing.cta}
+    </a>
+  </div>
+</section>

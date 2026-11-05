@@ -8,7 +8,7 @@
 
 - Astro 7.4.1 project with `@astrojs/cloudflare` 14.4.1 and `wrangler` installed. Package manager: bun.
 - `astro.config.mjs` registers the `cloudflare()` adapter, internationalization (ADR-004), the brand fonts, and `site` from the `SITE_URL` build variable.
-- Implemented in `feature/landing`: landing page migrated from the Claude Design prototype to Astro components and client TypeScript, with no new dependencies, in Spanish (`/`) and English (`/en`). It includes a header with menu and language switcher, hero, "Sound familiar?", cases with four interactive demos, services, process, contact, and footer, with their animations. Also base SEO (titles, Open Graph, `robots.txt`; `canonical` and `hreflang` only if `SITE_URL` is set) and the contact form (component, `POST /api/contact` endpoint, and schema in `supabase/contact_messages.sql`), with the same logic and a new look. See [architecture.md](architecture.md).
+- Implemented in `feature/landing`: landing page migrated from the Claude Design prototype to Astro components and client TypeScript, with no new dependencies, in Spanish (`/`) and English (`/en`). It includes a header with menu and language switcher, hero, "Sound familiar?", cases with four interactive demos, services, process, contact, and footer, with their animations. Also base SEO (titles, Open Graph, `robots.txt`; `canonical` and `hreflang` only if `SITE_URL` is set) and the contact form (component, `POST /api/contact` endpoint, and schema in `supabase/contact_messages.sql`), with the same logic and a new look. It also includes the “A real project” (Katedra, showing its live site in miniature through an iframe) and “What it costs” sections, and a language switch that keeps the reading position with a wipe animation. See [architecture.md](architecture.md).
 - Verified in a browser with `bun run preview` (`/` and `/en`): stacked sheets, ribbon, title reveals, steps, header tone, case transitions, the four demos, service hover, menu, and form prefill. No console errors. At 375 and 768 px the layout was measured inside an iframe, with no overflow.
 - The form's success and error states were tested by simulating the endpoint response. `prefers-reduced-motion` was tested only in the JavaScript logic, by simulating the media query.
 - `bun run build` passes with and without `SITE_URL`, and with the form (verified on the `feature/landing` branch).
@@ -17,15 +17,16 @@
 - `wrangler.jsonc` targets Workers with Static Assets (`main` + `assets`).
 - `.gitignore` excludes `.wrangler/` and `.dev.vars*`; `.dev.vars.example` and `.env.example` list the variables.
 - `.dev.vars` does not define `TURNSTILE_SECRET_KEY`, so the endpoint returns `500 unavailable` locally.
-- Not verified: the real integration with Turnstile, Supabase, and Resend; the Supabase REST path and `turnstile.reset()`, not confirmed in the documentation; the endpoint's 10 ms CPU limit; performance and appearance on a real phone; the `prefers-reduced-motion` CSS rule; and `bun run dev`.
+- Verified in the browser (November 2026): `/` and `/en` render every section with no console errors in 390, 768, 820, and 1440 px windows, with no horizontal overflow; the six-link menu fits completely and the wordmark does not overlap the header buttons. Sizes were tested by loading the page in an iframe of that width. `bun run dev` returns 200 on `/` and `/en`.
+- Not verified: the contact form in a browser; Safari and Firefox (in Firefox the Katedra miniature uses `transform` instead of `zoom`); the real integration with Turnstile, Supabase, and Resend; the Supabase REST path and `turnstile.reset()`, not confirmed in the documentation; the endpoint's 10 ms CPU limit; performance and appearance on a real phone; and the `prefers-reduced-motion` CSS rule. The Katedra miniature depends on `katedra-client.vercel.app` continuing to allow embedding.
 - There is no sitemap, `og:image`, logo, or production domain.
 - The actual deployment, per-branch previews, and secrets in Cloudflare are not configured.
 
 ## Branches
 
 - Branches are grouped by area, not by task: `feature/landing` (hero, services, base SEO, and contact form) and `feature/docs` (documentation and ADRs).
-- `staging` (published on `origin`) contains `feature/docs` and the first version of `feature/landing`. `main` has not received changes since the initial scaffold and only receives `staging` after the owner tests it.
-- The landing page migration to components is on `feature/landing`, not merged into `staging`.
+- `staging` (published on `origin`) contains `feature/docs` and `feature/landing`. `main` has not received changes since the initial scaffold and only receives `staging` after the owner tests it.
+- The landing page migration to components, with the “A real project” and “What it costs” sections, was merged into `staging` in November 2026.
 - `feature/hero-section` was deleted from `origin`; its commit is contained in `feature/landing`.
 
 ## Current decisions
@@ -39,7 +40,7 @@ ADR-001 (updated), ADR-002, ADR-003, ADR-004, ADR-005 (anti-spam with Cloudflare
 3. Logo (mark and favicon): to be created by the owner; until then the header uses a text wordmark and the favicon is Astro's.
 4. Landing page (`feature/landing`): the migration is done. Still missing: reviewing the English translation, filling in email, WhatsApp, city, and response time in `src/lib/site.ts` (empty values are hidden), and the end-to-end test: create the Supabase project and run `supabase/contact_messages.sql`, create the Turnstile widget and the Resend account, and set the variables (see [architecture.md](architecture.md)).
 5. Define the production domain. It enables `SITE_URL`, the sitemap, `canonical` and `hreflang`, and the Resend sender.
-6. Merge `feature/landing` into `staging` after the checks in `04-quality-and-verification`; then test `staging` and merge it into `main`. Requires the owner's consent. Per-branch previews are not configured yet.
+6. Test `staging` (it already includes `feature/landing`) and merge it into `main`. Requires the owner's consent. Per-branch previews are not configured yet.
 
 ## Open decisions
 

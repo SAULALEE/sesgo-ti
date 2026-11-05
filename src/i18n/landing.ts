@@ -18,6 +18,7 @@ const es = {
     use: 'Usar',
     send: 'Enviar',
     other: 'Otro',
+    demo: 'Ver demo',
   },
   header: {
     menu: 'Menú',
@@ -29,6 +30,8 @@ const es = {
     { href: '#caso', label: 'Tu caso' },
     { href: '#servicios', label: 'Lo que construyo' },
     { href: '#proceso', label: 'Así trabajo' },
+    { href: '#proyecto', label: 'Un proyecto real' },
+    { href: '#precio', label: 'Lo que cuesta' },
     { href: '#contacto', label: 'Escríbeme' },
   ],
   hero: {
@@ -40,7 +43,7 @@ const es = {
     lead: 'Aplicaciones, sitios web, sistemas de gestión y automatización con IA para negocios, empresas que están creciendo y escuelas de México. Tú me cuentas qué no funciona; yo lo construyo.',
     cta: 'Escríbeme',
     secondary: 'o elige tu caso aquí abajo ↓',
-    note: 'Una sola persona diseña y programa. Para negocios pequeños, empresas en crecimiento y escuelas públicas y privadas.',
+    note: 'Una sola persona diseña y programa.',
     country: 'México.',
   },
   problems: {
@@ -92,7 +95,7 @@ const es = {
           { text: 'Cotizo a mano cada vez', scene: 0 },
           { text: 'Inscripciones en papel, otra vez', scene: 1 },
           { text: 'Quiero una app, pero no sé si la necesito', scene: 3 },
-          { text: '¿Siguen teniendo lugar?', scene: 2 },
+          { text: '¿Tienen lugar para el sábado?', scene: 2 },
         ],
       },
     ],
@@ -261,7 +264,7 @@ const es = {
     steps: [
       {
         title: 'Me cuentas cómo trabajas hoy.',
-        body: 'Una llamada o un café. Sin tecnicismos: tú me explicas tu operación y yo hago las preguntas.',
+        body: 'Una llamada sin tecnicismos: tú me explicas tu operación y yo hago las preguntas.',
       },
       {
         title: 'Lo ves antes de construirlo.',
@@ -276,6 +279,37 @@ const es = {
         body: 'Te enseño a usarlo a ti y a tu equipo, y sigo cerca cuando tu negocio cambie y el sistema tenga que cambiar con él.',
       },
     ],
+  },
+  project: {
+    label: 'Un proyecto real',
+    titleStart: 'Un proyecto ',
+    titleEnd: 'real',
+    name: 'Katedra',
+    body: 'Una herramienta para profesores. Le das el temario y te devuelve la estructura del curso, la teoría, los exámenes y las diapositivas.',
+    previewAlt: 'Panel de Katedra mostrando la biblioteca de asignaturas de un profesor.',
+    app: 'Abrir Katedra',
+    cta: 'Quiero algo así',
+    prefill: 'Vi Katedra y quiero algo así para ',
+  },
+  pricing: {
+    label: 'Lo que cuesta',
+    titleStart: 'Lo que ',
+    titleEnd: 'cuesta',
+    fromLabel: 'Desde',
+    amount: '$2,000',
+    currency: 'MXN',
+    rows: [
+      {
+        title: 'Un sitio web',
+        body: 'Desde $2,000 MXN. Una página que explica qué haces, se ve bien en el celular y le da a la gente por dónde escribirte.',
+      },
+      {
+        title: 'Un sistema de gestión',
+        body: 'Cuesta más, y depende de cuántas personas lo vayan a usar y de cuánto tenga que hacer. El número te lo doy después de la primera llamada, no antes.',
+      },
+    ],
+    cta: 'Pídeme un presupuesto',
+    prefill: 'Quiero un presupuesto para ',
   },
   footer: {
     label: 'Pie',
@@ -302,6 +336,7 @@ const en: typeof es = {
     use: 'Use',
     send: 'Send',
     other: 'Another',
+    demo: 'See demo',
   },
   header: {
     menu: 'Menu',
@@ -313,6 +348,8 @@ const en: typeof es = {
     { href: '#caso', label: 'Your case' },
     { href: '#servicios', label: 'What I build' },
     { href: '#proceso', label: 'How I work' },
+    { href: '#proyecto', label: 'A real project' },
+    { href: '#precio', label: 'What it costs' },
     { href: '#contacto', label: 'Write to me' },
   ],
   hero: {
@@ -323,7 +360,7 @@ const en: typeof es = {
     lead: 'Apps, websites, management systems, and AI automation for small businesses, growing companies, and schools in Mexico. You tell me what isn’t working; I build the fix.',
     cta: 'Write to me',
     secondary: 'or pick your case below ↓',
-    note: 'One person designs and builds. For small businesses, growing companies, and public and private schools.',
+    note: 'One person designs and builds.',
     country: 'Mexico.',
   },
   problems: {
@@ -375,7 +412,7 @@ const en: typeof es = {
           { text: 'I write every quote by hand', scene: 0 },
           { text: 'Paper enrollment forms, again', scene: 1 },
           { text: 'I want an app, but I’m not sure I need one', scene: 3 },
-          { text: 'Do you still have openings?', scene: 2 },
+          { text: 'Do you have room on Saturday?', scene: 2 },
         ],
       },
     ],
@@ -544,7 +581,7 @@ const en: typeof es = {
     steps: [
       {
         title: 'You tell me how you work today.',
-        body: 'A call or a coffee. No jargon: you explain your operation and I ask the questions.',
+        body: 'A call with no jargon: you explain your operation and I ask the questions.',
       },
       {
         title: 'You see it before it’s built.',
@@ -559,6 +596,37 @@ const en: typeof es = {
         body: 'I teach you and your team to use it, and I stay close when your business changes and the system has to change with it.',
       },
     ],
+  },
+  project: {
+    label: 'A real project',
+    titleStart: 'A real ',
+    titleEnd: 'project',
+    name: 'Katedra',
+    body: 'A tool for teachers. You give it the syllabus and it returns the course outline, the theory, the exams, and the slides.',
+    previewAlt: 'Katedra’s dashboard showing a teacher’s library of subjects.',
+    app: 'Open Katedra',
+    cta: 'I want something like this',
+    prefill: 'I saw Katedra and I want something like this for ',
+  },
+  pricing: {
+    label: 'What it costs',
+    titleStart: 'What it ',
+    titleEnd: 'costs',
+    fromLabel: 'From',
+    amount: '$2,000',
+    currency: 'MXN',
+    rows: [
+      {
+        title: 'A website',
+        body: 'From $2,000 MXN. A page that explains what you do, looks right on a phone, and gives people a way to reach you.',
+      },
+      {
+        title: 'A management system',
+        body: 'It costs more, and it depends on how many people will use it and how much it has to do. I give you the number after the first call, not before.',
+      },
+    ],
+    cta: 'Ask me for a quote',
+    prefill: 'I want a quote for ',
   },
   footer: {
     label: 'Footer',
