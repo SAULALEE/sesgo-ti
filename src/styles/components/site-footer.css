@@ -1,6 +1,6 @@
 .footer {
   position: relative;
-  z-index: 7;
+  z-index: 9;
   margin-top: calc(var(--sheet-radius) * -1);
   padding: clamp(40px, 6vh, 64px) clamp(16px, 3vw, 44px) 0;
   overflow: hidden;
