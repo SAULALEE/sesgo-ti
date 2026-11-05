@@ -37,6 +37,10 @@ const ogLocale = { es: 'es_MX', en: 'en_US' }[lang];
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
+    <script is:inline>
+      // Set before first paint so the wipe covers the page after a language switch instead of flashing it.
+      if (sessionStorage.getItem('sg-lang-scroll')) document.documentElement.setAttribute('data-lang-enter', '');
+    </script>
     <title>{title}</title>
     {canonical && <link rel="canonical" href={canonical} />}
     {

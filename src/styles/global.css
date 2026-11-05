@@ -226,6 +226,43 @@ main {
   white-space: nowrap;
 }
 
+/* Language switch: the same diagonal wipe the case plates use, in Danube. */
+html.lang-leaving::after,
+html[data-lang-enter]::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: var(--color-accent);
+  pointer-events: none;
+}
+
+html.lang-leaving::after {
+  animation: sgWipeIn 0.7s cubic-bezier(0.77, 0, 0.18, 1) both;
+}
+
+html[data-lang-enter]::after {
+  animation: sgWipeOut 0.8s cubic-bezier(0.77, 0, 0.18, 1) both;
+}
+
+@keyframes sgWipeIn {
+  from {
+    clip-path: polygon(140% 0%, 140% 0%, 140% 100%, 100% 100%);
+  }
+  to {
+    clip-path: polygon(0% 0%, 140% 0%, 140% 100%, -40% 100%);
+  }
+}
+
+@keyframes sgWipeOut {
+  from {
+    clip-path: polygon(0% 0%, 140% 0%, 140% 100%, -40% 100%);
+  }
+  to {
+    clip-path: polygon(-40% 0%, 0% 0%, -40% 100%, -40% 100%);
+  }
+}
+
 @keyframes sgBuild {
   0% {
     opacity: 0;
