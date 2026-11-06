@@ -1,0 +1,38 @@
+---
+import '../styles/components/whatsapp-button.css';
+import { useTranslations, type Locale } from '../i18n/ui';
+import { site, whatsappUrl } from '../lib/site';
+import { landing } from '../i18n/landing';
+
+interface Props {
+  lang: Locale;
+  // 'bar' is the fixed header button (icon only on small screens); 'footer' is the larger one.
+  variant: 'bar' | 'footer';
+}
+
+const { lang, variant } = Astro.props;
+const t = useTranslations(lang);
+const { cursor } = landing[lang];
+---
+
+{
+  site.whatsapp && (
+    <a
+      class:list={['wa', `wa--${variant}`]}
+      href={whatsappUrl(t('contact.whatsappMessage'))}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={t('whatsapp.label')}
+      data-magnetic
+      data-cursor-label={cursor.talk}
+    >
+      <svg class="wa__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path
+          fill="currentColor"
+          d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 2a8 8 0 1 1-4.2 14.8l-.3-.2-2.4.6.6-2.3-.2-.3A8 8 0 0 1 12 4Zm-3.2 3.6c-.3 0-.6.2-.8.5-.3.4-.8 1.2-.3 2.6.6 1.6 2.2 3.4 4.2 4.3 1.2.5 2 .6 2.7.4.6-.2 1.2-.8 1.4-1.4.1-.3.1-.5 0-.6l-1.7-.8c-.2-.1-.4 0-.6.2l-.6.7c-.1.2-.3.2-.5.1-.9-.4-1.9-1.2-2.5-2.3-.1-.2 0-.4.1-.5l.4-.5c.1-.2.2-.4.1-.6l-.7-1.7c-.1-.2-.3-.3-.5-.3Z"
+        />
+      </svg>
+      <span class="wa__text">{t('whatsapp.text')}</span>
+    </a>
+  )
+}

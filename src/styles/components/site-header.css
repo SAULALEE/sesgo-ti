@@ -99,8 +99,20 @@
   white-space: nowrap;
   pointer-events: auto;
 }
+/* The WhatsApp button joins the end group, so the clock goes first when space runs short. */
+@media (max-width: 1180px) {
+  .clock {
+    display: none;
+  }
+}
 @media (max-width: 900px) {
   .glass {
+    display: none;
+  }
+}
+/* On phones the menu already has "Escríbeme"; the header keeps the WhatsApp icon only. */
+@media (max-width: 640px) {
+  .write {
     display: none;
   }
 }
