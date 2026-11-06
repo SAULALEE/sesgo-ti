@@ -16,9 +16,10 @@
 - The endpoint was tested in `bun run preview` with fake variables: it returns `400 invalid` for invalid data or a body that is not a form, `400 captcha` for a fake token, and `500 unavailable` without environment variables.
 - `wrangler.jsonc` targets Workers with Static Assets (`main` + `assets`).
 - `.gitignore` excludes `.wrangler/` and `.dev.vars*`; `.dev.vars.example` and `.env.example` list the variables.
-- `.dev.vars` does not define `TURNSTILE_SECRET_KEY`, so the endpoint returns `500 unavailable` locally.
+- Contact form (November 2026, `bun run preview`): Supabase, Turnstile, and the secret key are configured locally; a real submission saved a row in `contact_messages` (RLS on, no policies). The "What's your challenge?" field is now a topic list (inventory, payments, repeated questions, idea, other) plus an optional message, required only for "other"; the form validates every field inline and the server repeats the validation. The validation logic was checked in the browser by simulating submissions and covered by `bun test`; the visual result was seen only in a small window.
 - Verified in the browser (November 2026): `/` and `/en` render every section with no console errors in 390, 768, 820, and 1440 px windows, with no horizontal overflow; the six-link menu fits completely and the wordmark does not overlap the header buttons. Sizes were tested by loading the page in an iframe of that width. `bun run dev` returns 200 on `/` and `/en`.
-- Not verified: the contact form in a browser; Safari and Firefox (in Firefox the Katedra miniature uses `transform` instead of `zoom`); the real integration with Turnstile, Supabase, and Resend; the Supabase REST path and `turnstile.reset()`, not confirmed in the documentation; the endpoint's 10 ms CPU limit; performance and appearance on a real phone; and the `prefers-reduced-motion` CSS rule. The Katedra miniature depends on `katedra-client.vercel.app` continuing to allow embedding.
+- Verified (November 2026): a real submission with the "inventory" topic saved the row with `topic` in Supabase (migration applied) and the owner confirmed the Resend email arrived. Not verified: Safari and Firefox (in Firefox the Katedra miniature uses `transform` instead of `zoom`); `turnstile.reset()` after a submission, not confirmed in the documentation; the endpoint's 10 ms CPU limit; performance and appearance on a real phone; and the `prefers-reduced-motion` CSS rule. The Katedra miniature depends on `katedra-client.vercel.app` continuing to allow embedding.
+- WhatsApp button (November 2026): fixed in the header (icon only below 640 px; the clock is hidden below 1181 px and "Write to me" below 641 px) and in the footer, with a `wa.me` link and the default message from `contact.whatsappMessage`. Measured with no overlaps across 24 width and language combinations; opening WhatsApp from a phone was not tested.
 - There is no sitemap, `og:image`, logo, or production domain.
 - The actual deployment, per-branch previews, and secrets in Cloudflare are not configured.
 
@@ -38,13 +39,13 @@ ADR-001 (updated), ADR-002, ADR-003, ADR-004, ADR-005 (anti-spam with Cloudflare
 1. Complete [brand-context.md](brand-context.md). Still missing: the one-or-two-sentence description of SESGO TI, the role of the decision maker, how conversion is measured, the logo files, confirmation of whether real case studies, testimonials, or articles exist, and reviewing sections 4 and 9 against ADR-007.
 2. ~~Local technical base~~ (done): adapter, `.gitignore`, `.dev.vars.example`, build, and preview. Cloudflare deployment and per-branch previews are still to be configured.
 3. Logo (mark and favicon): to be created by the owner; until then the header uses a text wordmark and the favicon is Astro's.
-4. Landing page (`feature/landing`): the migration is done. Still missing: reviewing the English translation, filling in email, WhatsApp, city, and response time in `src/lib/site.ts` (empty values are hidden), and the end-to-end test: create the Supabase project and run `supabase/contact_messages.sql`, create the Turnstile widget and the Resend account, and set the variables (see [architecture.md](architecture.md)).
+4. Landing page (`feature/landing`): the migration is done. Still missing: reviewing the English translation, filling in email, city, and response time in `src/lib/site.ts` (empty values are hidden), and finishing the end-to-end test: run the `topic` migration in `supabase/contact_messages.sql`, confirm the Resend email arrives, and check `turnstile.reset()` (variables are in [architecture.md](architecture.md)). The migration and the email are already confirmed.
 5. Define the production domain. It enables `SITE_URL`, the sitemap, `canonical` and `hreflang`, and the Resend sender.
 6. Test `staging` (it already includes `feature/landing`) and merge it into `main`. Requires the owner's consent. Per-branch previews are not configured yet.
 
 ## Open decisions
 
-- Mitigation for Supabase's inactivity pause (requires an ADR). The Supabase billing FAQ page consulted does not document that pause; ADR-002 remains the only source.
+- Supabase inactivity pause: ADR-009 proposes a scheduled GitHub Actions workflow (`.github/workflows/supabase-keepalive.yml`). Still missing: storing `SUPABASE_URL` and `SUPABASE_SECRET_KEY` as repository secrets, running it once, and watching for several weeks that the project does not pause. Supabase's FAQ confirms the 7-day pause.
 - Confirm that Workers on the free plan allows commercial use (see ADR-003). The Workers pricing page does not mention it; Cloudflare's terms of service still need to be reviewed.
 
 ## Detected discrepancies

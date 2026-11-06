@@ -37,11 +37,11 @@ POST /api/contact (Worker)
 
 **Manejo de fallos parciales.** Supabase y Resend se intentan a la vez. Si uno falla y el otro funciona, el visitante recibe éxito y el fallo se registra en los logs del Worker. Así, un proyecto de Supabase pausado (ADR-002) no hace perder el contacto mientras el correo siga funcionando. La solicitud falla solo si fallan ambos.
 
-**Límites de validación:** nombre hasta 100 caracteres, correo hasta 254, mensaje de 10 a 2000, idioma `es` o `en`.
+**Límites de validación:** nombre hasta 100 caracteres, correo hasta 100 (límite definido por el responsable), tema obligatorio (`inventory`, `payments`, `questions`, `idea` u `other`), idioma `es` o `en`. El mensaje admite hasta 2000 caracteres y es opcional, salvo con el tema `other` ("Otro"), donde exige al menos 10. El navegador valida los mismos campos antes de enviar y muestra el error junto a cada uno; el servidor repite la validación.
 
 ## Esquema de datos
 
-Definido en `supabase/contact_messages.sql`: tabla `contact_messages` con `id`, `created_at`, `name`, `email`, `message` y `locale`, con las mismas restricciones de longitud que el endpoint. Tiene Row Level Security activado y ninguna política, de modo que los roles `anon` y `authenticated` no pueden leer ni escribir. Solo el servidor inserta filas, con la clave secreta de Supabase, que omite RLS.
+Definido en `supabase/contact_messages.sql`: tabla `contact_messages` con `id`, `created_at`, `name`, `email`, `topic`, `message` y `locale`, con las mismas restricciones de longitud que el endpoint. Tiene Row Level Security activado y ninguna política, de modo que los roles `anon` y `authenticated` no pueden leer ni escribir. Solo el servidor inserta filas, con la clave secreta de Supabase, que omite RLS.
 
 ## Variables de entorno
 
@@ -63,5 +63,5 @@ Valores nunca versionados. Las de servidor van en `.dev.vars` en local y en prod
 - **Pausa de Supabase por inactividad** (ADR-002): si el proyecto gratuito se pausa, los contactos solo llegan por correo y el fallo queda únicamente en los logs. No hay alerta ni mitigación decidida.
 - **Remitente de pruebas de Resend** (ADR-001): `onboarding@resend.dev` solo envía al correo de la cuenta de Resend. Debe cambiarse cuando exista un dominio propio.
 - **Dependencia de JavaScript:** el formulario se envía con JavaScript; sin él, el navegador recibiría la respuesta JSON del endpoint.
-- **Sin verificar de extremo a extremo:** la integración real con Turnstile, Supabase y Resend no se ha probado (faltan credenciales). La ruta REST de Supabase (`/rest/v1/contact_messages`) y el reinicio del widget con `turnstile.reset()` no se confirmaron en la documentación.
+- **Verificado de extremo a extremo (noviembre de 2026, `bun run preview`):** el widget de Turnstile se muestra y el servidor lo acepta, y el envío guarda la fila en Supabase (ruta `/rest/v1/contact_messages` confirmada). **Sin verificar:** la llegada del correo de Resend, `turnstile.reset()` tras un envío, el límite de 10 ms de CPU y el envío con el campo `topic` (requiere ejecutar la migración de `supabase/contact_messages.sql`).
 - **Límite de CPU de Workers gratuito** (ADR-006): 10 ms por invocación; no se ha medido el endpoint.

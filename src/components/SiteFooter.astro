@@ -2,6 +2,7 @@
 import '../styles/components/site-footer.css';
 import { landing } from '../i18n/landing';
 import type { Locale } from '../i18n/ui';
+import WhatsAppButton from './WhatsAppButton.astro';
 
 interface Props {
   lang: Locale;
@@ -16,6 +17,7 @@ const { nav, footer, cursor } = landing[lang];
     <nav class="footer__nav" aria-label={footer.label}>
       {nav.map((item) => <a href={item.href} data-cursor-label={cursor.go}>{item.label}</a>)}
     </nav>
+    <WhatsAppButton lang={lang} variant="footer" />
     <div class="footer__meta">
       <span class="footer__time">{footer.time} <span data-clock></span></span>
       <span>© {new Date().getFullYear()} SESGO TI</span>

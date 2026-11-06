@@ -258,6 +258,35 @@ Option 2. The headline is shown on three lines, and the two key words are set in
 - The form label "¿Qué te duele?" ("What hurts?") did not change and may no longer match the new headline; this is still to be decided.
 - If the headline changes again, edit `hero.lines` in `src/i18n/landing.ts`; words between asterisks are highlighted.
 
+## ADR-009 — Keep the free Supabase project active
+
+**Status:** Proposed (the owner chose option A; it still needs to be verified that it prevents the pause)
+
+**Date:** November 2026
+
+### Context
+
+ADR-002 records that free Supabase projects pause after 7 days without activity and that resuming them is manual. If the project pauses, the form stops saving contacts; the Resend email keeps arriving because both destinations are attempted in parallel. Supabase's FAQ states that a free project with low database activity for a week is paused, and that paid plans are not. It does not publish exactly what counts as activity; a community discussion says real queries count and an idle connection does not.
+
+### Options considered
+
+1. **A. Scheduled GitHub Actions workflow** that reads one row through the REST API every 3 days.
+2. **B. Cloudflare Cron Trigger.** It requires a custom entrypoint with `fetch` and `scheduled`, changes ADR-006, and no documentation was found confirming it works with Astro 7 and adapter 14.
+3. **C. External service** calling a public health endpoint. It adds an endpoint and an external dependency.
+4. **D. Paid Supabase plan.** It removes the pause, at a recurring cost.
+
+### Decision
+
+Option A. `.github/workflows/supabase-keepalive.yml` runs every 3 days and can also be run by hand; it reads one row from `contact_messages` with the secret key, stored as repository secrets (`SUPABASE_URL` and `SUPABASE_SECRET_KEY`).
+
+### Consequences
+
+- **Not verified:** that this read counts as activity for Supabase. It can only be confirmed by watching the project for several weeks; Supabase's warning email is the safety net.
+- An already paused project is not reactivated by this workflow; it must be resumed from the dashboard.
+- From memory of GitHub's behavior (not verified here), scheduled workflows are disabled after 60 days without repository activity.
+- It does not change the architecture or the site code.
+- Reconsider with option D once the site brings in clients, or if the workflow stops being reliable.
+
 ## Rule for new ADRs
 
 When a decision changes, add an entry with identifier, date, context, alternatives, decision, and implications. If it supersedes a previous decision, keep the earlier one and link both records.

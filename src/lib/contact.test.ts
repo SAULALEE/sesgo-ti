@@ -6,7 +6,13 @@ const form = (fields: Record<string, string>) => {
   for (const [key, value] of Object.entries(fields)) data.set(key, value);
   return data;
 };
-const valid = { name: ' Ana ', email: 'ana@example.com', message: 'Necesito un sistema', locale: 'es' };
+const valid = {
+  name: ' Ana ',
+  email: 'ana@example.com',
+  topic: 'other',
+  message: 'Necesito un sistema',
+  locale: 'es',
+};
 
 describe('parseContact', () => {
   test('accepts valid input and trims fields', () => {
@@ -15,12 +21,25 @@ describe('parseContact', () => {
   test.each([
     ['empty name', { name: '  ' }],
     ['long name', { name: 'a'.repeat(LIMITS.name + 1) }],
+    ['long email', { email: `${'a'.repeat(LIMITS.email)}@example.com` }],
     ['bad email', { email: 'ana@' }],
-    ['short message', { message: 'corto' }],
+    ['short message with topic other', { message: 'corto' }],
     ['long message', { message: 'a'.repeat(LIMITS.message + 1) }],
     ['unknown locale', { locale: 'fr' }],
+    ['missing topic', { topic: '' }],
+    ['unknown topic', { topic: 'hack' }],
   ])('rejects %s', (_, override) => {
     expect(parseContact(form({ ...valid, ...override }))).toBeNull();
+  });
+  test('allows an empty message when a listed topic is chosen', () => {
+    expect(parseContact(form({ ...valid, topic: 'inventory', message: '' }))).toMatchObject({
+      topic: 'inventory',
+      message: '',
+    });
+  });
+  test('still bounds the message of a listed topic', () => {
+    const long = 'a'.repeat(LIMITS.message + 1);
+    expect(parseContact(form({ ...valid, topic: 'idea', message: long }))).toBeNull();
   });
 });
 
