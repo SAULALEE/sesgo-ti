@@ -256,6 +256,35 @@ Opción 2. El título se muestra en tres líneas y las dos palabras clave van en
 - La etiqueta del formulario "¿Qué te duele?" no cambió y puede quedar desalineada con el nuevo título; está pendiente de decidir.
 - Si el título vuelve a cambiar, basta con editar `hero.lines` en `src/i18n/landing.ts`; las palabras entre asteriscos se resaltan.
 
+## ADR-009 — Mantener activo el proyecto gratuito de Supabase
+
+**Estado:** Propuesto (el responsable eligió la opción A; falta verificar que evita la pausa)
+
+**Fecha:** noviembre de 2026
+
+### Contexto
+
+ADR-002 registra que los proyectos gratuitos de Supabase se pausan tras 7 días sin actividad y que reanudarlos es manual. Si el proyecto se pausa, el formulario deja de guardar contactos; el correo de Resend sigue llegando porque ambos destinos se intentan en paralelo. La FAQ de Supabase indica que un proyecto gratuito con poca actividad en la base de datos durante una semana se pausa, y que los planes de pago no se pausan. No publica qué cuenta exactamente como actividad; una discusión de la comunidad indica que las consultas reales cuentan y que una conexión inactiva no.
+
+### Opciones consideradas
+
+1. **A. Flujo programado de GitHub Actions** que lee una fila por la API REST cada 3 días.
+2. **B. Cron Trigger de Cloudflare.** Exige un punto de entrada propio con `fetch` y `scheduled`, cambia ADR-006 y no se encontró documentación que confirme que funcione con Astro 7 y el adaptador 14.
+3. **C. Servicio externo** que llame a un endpoint público de salud. Añade un endpoint y una dependencia externa.
+4. **D. Plan de pago de Supabase.** Elimina la pausa, con costo recurrente.
+
+### Decisión
+
+Opción A. `.github/workflows/supabase-keepalive.yml` se ejecuta cada 3 días y también a mano, y lee una fila de `contact_messages` con la clave secreta, guardada como secreto del repositorio (`SUPABASE_URL` y `SUPABASE_SECRET_KEY`).
+
+### Implicaciones
+
+- **No verificado:** que esta lectura cuente como actividad para Supabase. Solo se confirma observando el proyecto durante varias semanas; el correo de aviso de Supabase es la red de seguridad.
+- Un proyecto ya pausado no se reactiva con este flujo; hay que reanudarlo desde el panel.
+- Por lo recordado de GitHub (no verificado aquí), los flujos programados se desactivan tras 60 días sin actividad en el repositorio.
+- No cambia la arquitectura ni el código del sitio.
+- Se reconsidera con la opción D cuando el sitio genere clientes, o si el flujo deja de ser fiable.
+
 ## Regla para nuevos ADRs
 
 Cuando una decisión cambie, agrega una entrada con identificador, fecha, contexto, alternativas, decisión e implicaciones. Si sustituye una decisión previa, conserva la anterior y enlaza ambos registros.

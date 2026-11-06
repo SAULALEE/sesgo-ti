@@ -45,7 +45,7 @@ ADR-001 (updated), ADR-002, ADR-003, ADR-004, ADR-005 (anti-spam with Cloudflare
 
 ## Open decisions
 
-- Mitigation for Supabase's inactivity pause (requires an ADR). The Supabase billing FAQ page consulted does not document that pause; ADR-002 remains the only source.
+- Supabase inactivity pause: ADR-009 proposes a scheduled GitHub Actions workflow (`.github/workflows/supabase-keepalive.yml`). Still missing: storing `SUPABASE_URL` and `SUPABASE_SECRET_KEY` as repository secrets, running it once, and watching for several weeks that the project does not pause. Supabase's FAQ confirms the 7-day pause.
 - Confirm that Workers on the free plan allows commercial use (see ADR-003). The Workers pricing page does not mention it; Cloudflare's terms of service still need to be reviewed.
 
 ## Detected discrepancies
