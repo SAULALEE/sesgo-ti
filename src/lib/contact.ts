@@ -1,10 +1,16 @@
 import { locales, type Locale } from '../i18n/ui';
 
-export const LIMITS = { name: 100, email: 254, message: 2000, messageMin: 10 } as const;
+export const LIMITS = { name: 100, email: 100, message: 2000, messageMin: 10 } as const;
+
+// Keys of the "what is your problem" list. The labels live in i18n/ui.ts. With any topic other
+// than 'other' the message is optional detail; with 'other' it is the description (min length).
+export const TOPICS = ['inventory', 'payments', 'questions', 'idea', 'other'] as const;
+export type Topic = (typeof TOPICS)[number];
 
 export interface ContactInput {
   name: string;
   email: string;
+  topic: Topic;
   message: string;
   locale: Locale;
 }
@@ -18,7 +24,7 @@ export interface ContactConfig {
   fromEmail: string;
 }
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function parseContact(form: FormData): ContactInput | null {
   const field = (key: string) => {
@@ -28,14 +34,16 @@ export function parseContact(form: FormData): ContactInput | null {
   const name = field('name');
   const email = field('email');
   const message = field('message');
+  const topic = TOPICS.find((t) => t === field('topic'));
   const locale = locales.find((l) => l === field('locale'));
 
   if (!name || name.length > LIMITS.name) return null;
   if (!EMAIL_PATTERN.test(email) || email.length > LIMITS.email) return null;
-  if (message.length < LIMITS.messageMin || message.length > LIMITS.message) return null;
-  if (!locale) return null;
+  if (!topic || !locale) return null;
+  if (message.length > LIMITS.message) return null;
+  if (topic === 'other' && message.length < LIMITS.messageMin) return null;
 
-  return { name, email, message, locale };
+  return { name, email, topic, message, locale };
 }
 
 async function call(url: string, init: RequestInit): Promise<Response | null> {
@@ -91,7 +99,7 @@ export async function sendNotification(
       to: config.toEmail,
       reply_to: input.email,
       subject: `Nuevo contacto: ${input.name.replace(/[\r\n]+/g, ' ')}`,
-      text: `Nombre: ${input.name}\nCorreo: ${input.email}\nIdioma: ${input.locale}\n\n${input.message}`,
+      text: `Nombre: ${input.name}\nCorreo: ${input.email}\nTema: ${input.topic}\nIdioma: ${input.locale}\n\n${input.message || '(sin detalles)'}`,
     }),
   });
   return res?.ok === true;

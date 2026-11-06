@@ -14,6 +14,7 @@
   --color-bubble: #f0eeec;
   --color-text-soft: #a8a6a3;
   --color-ink-soft: #4a5163;
+  --color-error: #ff8f85; /* form error text on Mirage (about 7:1) */
 
   --font-display: var(--font-instrument-serif), serif;
   --font-body: var(--font-inter), sans-serif;
