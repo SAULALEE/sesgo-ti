@@ -1,0 +1,53 @@
+---
+import '../styles/components/services.css';
+import { landing } from '../i18n/landing';
+import type { Locale } from '../i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const { services, cursor } = landing[lang];
+---
+
+<div id="servicios" class="anchor"></div>
+<section class="services sheet" data-sheet data-tone="dark" aria-label={services.label}>
+  <div class="sheet__veil" aria-hidden="true"></div>
+  <div class="services__head">
+    <h2 class="services__title" data-reveal>{services.titleStart}<span>{services.titleEnd}</span></h2>
+    <p class="services__lead">{services.lead}</p>
+  </div>
+  <div class="services__list">
+    {
+      services.items.map((item, i) => {
+        const index = String(i + 1).padStart(2, '0');
+        return (
+          <a
+            class="service"
+            href="#contacto"
+            data-prefill={`${services.prefill}${item.title}. `}
+            data-cursor-label={cursor.talk}
+          >
+            <div class="service__row">
+              <div class="service__name">
+                <span class="service__index">{index}</span>
+                <span class="service__title">{item.title}</span>
+              </div>
+              <p class="service__body">{item.body}</p>
+            </div>
+            <div class="service__over" aria-hidden="true">
+              <div class="service__row">
+                <div class="service__name">
+                  <span class="service__index">{index}</span>
+                  <span class="service__title service__title--italic">{item.title}</span>
+                </div>
+                <p class="service__body">{item.body}</p>
+              </div>
+            </div>
+          </a>
+        );
+      })
+    }
+  </div>
+</section>

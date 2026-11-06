@@ -1,0 +1,27 @@
+.ring {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 300;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  margin: -48px 0 0 -48px;
+  border-radius: 50%;
+  background: var(--color-text);
+  pointer-events: none;
+  transform: translate3d(-300px, -300px, 0) scale(0.16);
+  will-change: transform;
+}
+.ring__label {
+  padding: 0 8px;
+  color: var(--color-bg);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.1;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}

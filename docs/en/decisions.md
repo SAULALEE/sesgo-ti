@@ -1,0 +1,292 @@
+# Current Technical Decisions
+
+> Spanish source: [`../es/decisiones.md`](../es/decisiones.md). The Spanish version is canonical; this file mirrors it.
+
+> ADRs are kept because they explain why the project made a decision. When a decision changes, it is marked as superseded or updated; the earlier record is not deleted.
+
+## How to read this page
+
+- **Current:** describes the state that must be used now.
+- **Updated:** keeps a valid decision, with later changes.
+- **Superseded:** was correct at an earlier stage and must no longer be used.
+- **Rejected:** was evaluated and not adopted.
+- **Proposed:** written for decision. It is not approved and must not be treated as current until the owner approves it.
+
+Current decisions are written in the present tense. The context of an earlier decision is written in the past tense to make clear that it describes a historical stage.
+
+## ADR-001 — Framework, hosting, and contact form handling
+
+**Status:** Updated
+
+**Original date:** October 2026
+
+**Last update:** October 2026
+
+> **Note:** the hosting (Cloudflare Pages) was updated by [ADR-003](#adr-003--deployment-target-cloudflare-workers). The text of this record is kept as originally written.
+
+### Context
+
+SESGO TI needs a landing page to attract external clients that showcases web application development, automation, and AI integration. Development is done by a single person, with no budget for a domain or paid hosting, and the contact form must send an email and store the data received.
+
+### Options considered
+
+1. Next.js deployed on Vercel (Hobby plan).
+2. Astro deployed on Vercel (Hobby plan).
+3. Astro deployed on Netlify, using Netlify Forms for the form.
+4. Astro deployed on Cloudflare Pages, with Cloudflare D1 to store the data and Resend for email.
+
+Vercel was ruled out for both variants: the Hobby plan expressly prohibits commercial use, and a client-acquisition site with a contact form falls within that restriction.
+
+Netlify was considered for its native form handling, but was ruled out in favor of Cloudflare Pages based on hosting preference.
+
+### Decision
+
+The current stack is:
+
+- Framework: Astro, using the official `@astrojs/cloudflare` adapter to enable server routes.
+- Hosting: Cloudflare Pages (free plan, commercial use allowed).
+- Form storage: Supabase (Postgres). The original record of this decision used Cloudflare D1; the full detail of this change, including an operational risk and its contingency alternative, is in ADR-002.
+- Email sending: Resend (free plan), using the test address `onboarding@resend.dev` while no verified domain of our own exists. This address can only send to the Resend account's email, which matches the use case: notifying the owner of SESGO TI of a new lead, not third parties.
+
+### Implications
+
+- The site cannot be deployed on Vercel's free plan without violating its terms of service.
+- Once a custom domain exists, the Resend sender is updated to that verified domain; the rest of the architecture does not change.
+- Resend's free limits (100 emails per day, 3,000 per month) far exceed what a landing page contact form generates.
+
+## ADR-002 — Data layer: Supabase
+
+**Status:** Current
+
+**Date:** October 2026
+
+### Context
+
+Storing the contact form (ADR-001) solved only that specific need. SESGO TI has a medium-term vision of client and quote management, which eventually requires authentication, record-level access control, and business logic beyond saving a form. Building that from scratch on Cloudflare D1 would mean writing authentication and access control by hand, with no backend framework.
+
+### Options considered
+
+1. Keep Cloudflare D1: enough to store the form, but with no authentication, row-level access control, or clear growth path toward client management.
+2. Supabase: managed Postgres with built-in authentication, Row Level Security, Edge Functions, and an admin dashboard, compatible with the Cloudflare Workers runtime.
+3. NestJS with a dedicated Postgres database manager, deployed as a standalone service.
+
+### Decision
+
+Contact form storage, and the project's database in general, uses Supabase (Postgres). It gives a real growth path toward authentication and client management without committing the project to a dedicated backend yet.
+
+Email sending (Resend, see ADR-001) does not change and does not depend on Supabase.
+
+### Implications
+
+- Free Supabase projects are automatically paused after 7 days of inactivity and require manual reactivation from the dashboard. While form traffic is low, this must be checked periodically so the form does not fail without anyone noticing.
+- Supabase's free plan allows commercial use.
+- When the project needs client and quote management, Supabase already provides authentication and Row Level Security; there would be no need to migrate databases to build that functionality.
+
+### Contingency alternative
+
+If the inactivity pause risk becomes a real operational problem, or if the business logic grows beyond what Edge Functions can handle clearly, the next option is NestJS with a dedicated Postgres database manager, deployed as its own service. It uses the same language (TypeScript) as the rest of the project, with no need to introduce Java or Spring Boot. This route would be evaluated in its own ADR if it is ever activated.
+
+## ADR-003 — Deployment target: Cloudflare Workers
+
+**Status:** Current (updates the hosting of ADR-001)
+
+**Date:** October 2026
+
+### Context
+
+ADR-001 chose Cloudflare Pages as hosting. The project generated with Astro 7 uses `@astrojs/cloudflare` v14, whose entry point targets Cloudflare Workers, and `wrangler.jsonc` defines `main` and `assets` (Workers with Static Assets), not a Pages project. The documentation and the implementation differed.
+
+### Options considered
+
+1. Keep Pages: would require pinning an older adapter version or reconfiguring the project, moving away from the path the official adapter supports today.
+2. Cloudflare Workers with Static Assets: the target supported by the installed adapter and the one `wrangler.jsonc` already reflects.
+
+### Decision
+
+The deployment target is Cloudflare Workers with Static Assets. The rest of the stack in ADR-001 and ADR-002 does not change.
+
+### Implications
+
+- Per-branch previews are generated by Cloudflare's Workers integration, not Pages'. The `09-git-workflow` skill is updated accordingly.
+- Secrets are set with `wrangler secret` in production and with `.dev.vars` locally; the latter is not versioned.
+- **Pending verification against official documentation:** that Workers' free plan allows commercial use, and its current limits. This is not taken as true until confirmed, because ADR-001 relied on it for Pages.
+- The per-branch build and deploy process (Workers Builds or other) is yet to be configured.
+
+## ADR-004 — Internationalization: Spanish at the root, English under `/en`
+
+**Status:** Current
+
+**Date:** October 2026
+
+### Context
+
+The site is published in Spanish and English (brand context). The initial audience is Spanish-speaking SMBs. The default language was set by the project owner: Spanish.
+
+### Options considered
+
+1. Spanish at the root (`/`) and English under `/en`.
+2. Both languages prefixed (`/es` and `/en`) with a redirect from `/`.
+
+### Decision
+
+Astro's internationalization routing is used with `defaultLocale: "es"`, `locales: ["es", "en"]`, and `routing.prefixDefaultLocale: false`. Spanish pages live at the root of `src/pages/` and English pages in `src/pages/en/`. Configuration taken from Astro's official internationalization guide.
+
+### Implications
+
+- Option 1 avoids a redirect at `/` and keeps Spanish URLs unprefixed.
+- Every new page must exist in both languages; content is duplicated and must be kept in sync.
+- Spanish copy uses the formal **usted** form of address. _Updated by [ADR-007](#adr-007--landing-page-voice-and-positioning): the site uses **tú**. The rest of this record remains current._
+- Custom per-locale paths require `output: "server"` and no prerendered pages, according to the documentation; they are not used here.
+- Language switcher, `hreflang` tags, and per-language `<html lang>` are handled when implementing the layout and base SEO.
+
+## ADR-005 — Form anti-spam protection: Cloudflare Turnstile
+
+**Status:** Current (approved by the owner)
+
+**Date:** October 2026
+
+### Context
+
+The contact form is public, stores data in Supabase (ADR-002), and sends an email with Resend (ADR-001), whose free plan allows 100 emails per day. Without protection, a bot can fill the table and exhaust that quota, so real clients would stop being notified.
+
+### Options considered
+
+1. Cloudflare Turnstile, with server-side token verification.
+2. A honeypot field and submission-time validation, with no external service.
+3. Another third-party CAPTCHA. Not evaluated in detail.
+
+### Decision
+
+Option 1. The form endpoint rejects any request whose Turnstile token fails server-side verification. A honeypot field can be added later as an extra layer if needed.
+
+### Evidence
+
+Turnstile plans page (Cloudflare official documentation):
+
+- The free plan offers unlimited verifications, up to 20 widgets per account, and 10 hostnames per widget. Analytics keep 7 days and Cloudflare branding is retained.
+- The page describes it as suitable for "most production applications" and SMBs, and states it can be used without other Cloudflare services.
+
+### Implications
+
+- The secret key is defined as a Workers secret (`wrangler secret` and `.dev.vars`, see ADR-003). The site key is public.
+- The widget loads a Cloudflare script on the form page and adds a server call for every submission.
+- **Not verified:** the commercial-use terms of the free plan (the plans page does not include them), the widget's accessibility and privacy, and whether a `*.workers.dev` domain is valid as a widget hostname.
+- Reconsider if the terms prevent commercial use or if the widget causes measurable friction in conversions.
+
+## ADR-006 — Rendering mode: static site with one server endpoint
+
+**Status:** Current (approved by the owner)
+
+**Date:** October 2026
+
+### Context
+
+Astro prerenders everything by default. The only element that needs server code is the contact form endpoint. The `@astrojs/cloudflare` adapter is already installed and `astro.config.mjs` does not define `output`, so the current site is already static with an adapter.
+
+### Options considered
+
+1. Keep the default static output and mark only the form endpoint with `export const prerender = false`.
+2. `output: "server"`: all pages render on demand.
+
+### Decision
+
+Option 1. Pages stay prerendered and the `POST /api/contact` endpoint (no language prefix) is the only on-demand route.
+
+### Evidence
+
+- Astro on-demand rendering guide: everything is prerendered by default, `prerender = false` enables on-demand rendering per page or endpoint, and a static site with a server endpoint is a supported case.
+- Cloudflare adapter documentation: on-demand rendering requires the adapter, which is already installed.
+- Workers pricing: requests to static assets are free and unlimited. The free plan allows 100,000 requests per day and 10 ms of CPU time per invocation.
+
+### Implications
+
+- With option 1 only the endpoint consumes Workers invocations; with option 2 every page visit would.
+- Compatible with ADR-004: the internationalization used does not require `output: "server"`.
+- **Not verified:** that the endpoint (Turnstile verification, Supabase insert, and Resend send) fits the 10 ms CPU limit. It must be measured during implementation.
+- Reconsider if the project needs many pages rendered per request, for example with the client management mentioned in ADR-002.
+
+## ADR-007 — Landing page voice and positioning
+
+**Status:** Current (approved by the project owner; updates the form of address in ADR-004)
+
+**Date:** November 2026
+
+> **Note:** the headline "Dime qué te duele." was replaced by [ADR-008](#adr-008--landing-page-headline). The text of this record is kept as written.
+
+### Context
+
+The landing page was redesigned in Claude Design. The prototype addresses the reader informally (**tú**), in the first person, and speaks to businesses, growing companies, and schools in Mexico. The brand context and ADR-004 called for the formal **usted**, presenting as a studio, and an SMB audience. The design is built on that copy: the headline "Dime qué te duele." is the main visual element.
+
+### Options considered
+
+1. Adopt the prototype's copy and record the brand change.
+2. Migrate only the visuals and rewrite all copy using usted and a studio voice.
+
+### Decision
+
+Option 1. The site uses tú and the first person, presents itself as one person who designs and builds, and speaks to businesses, growing companies, and schools in Mexico. Services and process are shown as in the prototype.
+
+### Implications
+
+- Sections 1, 2, 3, and 6 of [brand-context.md](brand-context.md) are updated. Palette and typography do not change.
+- ADR-004 stays current except for the form of address: the site exists in Spanish and English.
+- The value proposition (brand context section 4) and the case study approach (section 9) have not been reviewed against the new voice.
+- Reconsider if SESGO TI goes back to presenting as a studio or agency, or if businesses and schools stop being the main audience.
+
+## ADR-008 — Landing page headline
+
+**Status:** Current (approved by the owner; updates one detail of ADR-007)
+
+**Date:** November 2026
+
+### Context
+
+ADR-007 adopted the prototype copy, whose headline was "Dime qué te duele." ("Tell me what hurts.") and served as the main visual element. The owner asked to replace it.
+
+### Options considered
+
+1. Keep "Dime qué te duele.".
+2. Use "Todo problema tiene un ángulo, yo encuentro el tuyo." with "ángulo" and "tuyo" highlighted.
+
+### Decision
+
+Option 2. The headline is shown on three lines, and the two key words are set in italic and in the accent color (Danube). The English version, "Every problem has an angle, I find yours.", is a proposed translation and awaits the owner's review.
+
+### Implications
+
+- ADR-007 remains current for voice (informal, first person) and positioning; only the headline changes.
+- The form label "¿Qué te duele?" ("What hurts?") did not change and may no longer match the new headline; this is still to be decided.
+- If the headline changes again, edit `hero.lines` in `src/i18n/landing.ts`; words between asterisks are highlighted.
+
+## ADR-009 — Keep the free Supabase project active
+
+**Status:** Proposed (the owner chose option A; it still needs to be verified that it prevents the pause)
+
+**Date:** November 2026
+
+### Context
+
+ADR-002 records that free Supabase projects pause after 7 days without activity and that resuming them is manual. If the project pauses, the form stops saving contacts; the Resend email keeps arriving because both destinations are attempted in parallel. Supabase's FAQ states that a free project with low database activity for a week is paused, and that paid plans are not. It does not publish exactly what counts as activity; a community discussion says real queries count and an idle connection does not.
+
+### Options considered
+
+1. **A. Scheduled GitHub Actions workflow** that reads one row through the REST API every 3 days.
+2. **B. Cloudflare Cron Trigger.** It requires a custom entrypoint with `fetch` and `scheduled`, changes ADR-006, and no documentation was found confirming it works with Astro 7 and adapter 14.
+3. **C. External service** calling a public health endpoint. It adds an endpoint and an external dependency.
+4. **D. Paid Supabase plan.** It removes the pause, at a recurring cost.
+
+### Decision
+
+Option A. `.github/workflows/supabase-keepalive.yml` runs every 3 days and can also be run by hand; it reads one row from `contact_messages` with the secret key, stored as repository secrets (`SUPABASE_URL` and `SUPABASE_SECRET_KEY`).
+
+### Consequences
+
+- **Not verified:** that this read counts as activity for Supabase. It can only be confirmed by watching the project for several weeks; Supabase's warning email is the safety net.
+- An already paused project is not reactivated by this workflow; it must be resumed from the dashboard.
+- From memory of GitHub's behavior (not verified here), scheduled workflows are disabled after 60 days without repository activity.
+- It does not change the architecture or the site code.
+- Reconsider with option D once the site brings in clients, or if the workflow stops being reliable.
+
+## Rule for new ADRs
+
+When a decision changes, add an entry with identifier, date, context, alternatives, decision, and implications. If it supersedes a previous decision, keep the earlier one and link both records.

@@ -1,0 +1,58 @@
+---
+import '../styles/components/hero.css';
+import { landing } from '../i18n/landing';
+import type { Locale } from '../i18n/ui';
+import { site } from '../lib/site';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const { hero, cursor } = landing[lang];
+const location = site.city ? `${site.city}, ${hero.country}` : hero.country;
+
+// Each letter gets a staggered entrance; the delay continues across both lines.
+let letterIndex = 0;
+const lines = hero.lines.map((line) =>
+  line.split('*').flatMap((part, i) =>
+    [...part].map((char) =>
+      char === ' ' ? null : { char, accent: i % 2 === 1, delay: 160 + letterIndex++ * 55 },
+    ),
+  ),
+);
+---
+
+<section class="hero sheet" id="inicio" data-sheet data-tone="dark">
+  <div class="sheet__veil" aria-hidden="true"></div>
+  <div class="hero__top">
+    <p class="hero__lead"><strong>{hero.leadStrong}</strong> <span>{hero.lead}</span></p>
+  </div>
+  <h1 class="hero__title" aria-label={hero.title} style={`--hero-size:${hero.size}`}>
+    {
+      lines.map((line) => (
+        <span class="hero__line" aria-hidden="true">
+          {line.map((letter) =>
+            letter ? (
+              <span
+                class:list={['hero__build', { 'hero__accent': letter.accent }]}
+                style={`animation-delay:${letter.delay}ms`}
+              >
+                <span data-l>{letter.char}</span>
+              </span>
+            ) : (
+              <span class="hero__gap" />
+            ),
+          )}
+        </span>
+      ))
+    }
+  </h1>
+  <div class="hero__bottom">
+    <div class="hero__actions">
+      <a class="hero__cta" href="#contacto" data-magnetic data-cursor-label={cursor.talk}>{hero.cta}</a>
+      <a class="hero__secondary" href="#caso" data-cursor-label={cursor.down}>{hero.secondary}</a>
+    </div>
+    <p class="hero__note">{hero.note} {location}</p>
+  </div>
+</section>

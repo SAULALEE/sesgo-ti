@@ -1,0 +1,103 @@
+---
+import '../../styles/components/school-demo.css';
+import { landing } from '../../i18n/landing';
+import type { Locale } from '../../i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const { school, cases, cursor } = landing[lang];
+---
+
+<div class="school__scene" data-scene-c="1" style="visibility:hidden">
+  <div
+    class="case-card portal"
+    data-piece
+    data-tone="light"
+    data-school
+    data-downloaded={school.downloaded}
+    data-paid={school.paid}
+    data-paid-note={school.paidNote}
+    data-confirmed={school.confirmed}
+  >
+    <div class="portal__head">
+      <span class="portal__avatar">{school.initials}</span>
+      <div class="portal__who">
+        <p class="portal__name">{school.student}</p>
+        <p class="portal__detail">{school.detail}</p>
+      </div>
+      <span class="portal__badge">{school.badge}</span>
+    </div>
+    <div class="tabs" role="tablist" aria-label={school.tabsLabel}>
+      {
+        school.tabs.map((tab, i) => (
+          <button
+            type="button"
+            role="tab"
+            class="tabs__tab"
+            id={`school-tab-${i}`}
+            aria-controls={`school-panel-${i}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            data-tab={i}
+            data-cursor-label={cursor.open}
+          >
+            {tab}
+          </button>
+        ))
+      }
+    </div>
+    <div class="panels">
+      <div class="panel" role="tabpanel" id="school-panel-0" aria-labelledby="school-tab-0" data-panel>
+        <div class="grades">
+          {
+            school.grades.map((row) => (
+              <>
+                <span class="grades__subject">{row.subject}</span>
+                <span class="grades__value">{row.grade}</span>
+              </>
+            ))
+          }
+        </div>
+        <button type="button" class="download" data-download data-cursor-label={cursor.download}>
+          <span data-download-label>{school.download}</span><span>{school.average}</span>
+        </button>
+      </div>
+      <div class="panel" role="tabpanel" id="school-panel-1" aria-labelledby="school-tab-1" data-panel hidden>
+        <p class="pay__label">{school.tuition}</p>
+        <p class="pay__amount">{school.amount}</p>
+        <p class="pay__note" data-pay-note>{school.payNote}</p>
+        <button type="button" class="pay__button" data-pay data-cursor-label={cursor.pay}>{school.pay}</button>
+        <p class="pay__methods">{school.payMethods}</p>
+      </div>
+      <div class="panel panel--notices" role="tabpanel" id="school-panel-2" aria-labelledby="school-tab-2" data-panel hidden>
+        <div class="notice">
+          <p class="notice__date">{school.notice1Date}</p>
+          <p class="notice__text">{school.notice1}</p>
+        </div>
+        <div class="notice">
+          <p class="notice__date">{school.notice2Date}</p>
+          <p class="notice__text notice__text--action">{school.notice2}</p>
+          <button type="button" class="notice__button" data-confirm data-cursor-label={cursor.confirm}>{school.confirm}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="case-note school__note" data-piece>
+    <p class="school__note-kicker">{school.audience}</p>
+    <p class="school__note-body">{school.body}</p>
+    <a
+      class="case-cta school__note-cta"
+      href="#contacto"
+      data-prefill={`${cases.pains[1]} `}
+      data-magnetic
+      data-cursor-label={cursor.talk}>{cases.cta}</a
+    >
+  </div>
+</div>
+
+<script>
+  import '../../scripts/school';
+</script>

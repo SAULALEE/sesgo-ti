@@ -1,0 +1,79 @@
+---
+import '../styles/components/project.css';
+import { landing } from '../i18n/landing';
+import type { Locale } from '../i18n/ui';
+import { site } from '../lib/site';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const { project, cursor } = landing[lang];
+const host = new URL(site.project.app).host;
+---
+
+<div id="proyecto" class="anchor"></div>
+<section class="project sheet" data-sheet data-tone="light" aria-label={project.label}>
+  <div class="sheet__veil" aria-hidden="true"></div>
+  <h2 class="project__title" data-reveal>{project.titleStart}<span>{project.titleEnd}</span></h2>
+  <div class="project__scene">
+    <div class="project__text">
+      <h3 class="project__name">{project.name}</h3>
+      <p class="project__body">{project.body}</p>
+      <div class="project__actions">
+        <a
+          class="project__app"
+          href={site.project.app}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-magnetic
+          data-cursor-label={cursor.demo}
+        >
+          {project.app}
+        </a>
+        <a class="project__cta" href="#contacto" data-prefill={project.prefill} data-cursor-label={cursor.talk}>
+          {project.cta}
+        </a>
+      </div>
+    </div>
+    <div class="case-card window kapp" data-tone="dark">
+      <div class="window__bar" aria-hidden="true">
+        <span class="window__dots"><i></i><i></i><i></i></span>
+        <span class="window__title">{host}</span>
+      </div>
+      <div class="kapp__view" data-kapp-view>
+        <iframe
+          class="kapp__frame"
+          src={site.project.app}
+          title={project.previewAlt}
+          loading="lazy"
+          tabindex="-1"></iframe>
+        <a
+          class="kapp__link"
+          href={site.project.app}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={project.app}
+          data-cursor-label={cursor.demo}></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // The iframe renders at a desktop-sized viewport and is scaled down to fit the card; narrow
+  // cards use a smaller virtual width so the text stays legible. CSS zoom re-renders the page at
+  // its final size (sharp text); Firefox does not scale iframe contents with zoom, so it keeps transform.
+  const useZoom = CSS.supports('zoom', '1') && !/firefox/i.test(navigator.userAgent);
+  document.querySelectorAll<HTMLElement>('[data-kapp-view]').forEach((view) => {
+    if (useZoom) view.dataset.zoom = '';
+    const fit = () => {
+      const width = view.clientWidth < 600 ? 640 : 1280;
+      view.style.setProperty('--kapp-w', `${width}px`);
+      view.style.setProperty('--kapp-scale', String(view.clientWidth / width));
+    };
+    fit();
+    new ResizeObserver(fit).observe(view);
+  });
+</script>

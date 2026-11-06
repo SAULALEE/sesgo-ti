@@ -1,0 +1,343 @@
+:root {
+  /* Palette: docs/es/contexto-marca.md §8 */
+  --color-bg: #1b2232; /* Mirage */
+  --color-accent: #5b83d3; /* Danube: large headings and UI only (4.26:1 on bg) */
+  --color-text: #dfdddb; /* Westar: body text (11.73:1 on bg) */
+
+  /* Shades derived from the palette */
+  --color-shade: #0b0e15;
+  --color-surface: #232b3e;
+  --color-field: #2a3348;
+  --color-deep: #2b4585;
+  --color-flash: #3d5a99;
+  --color-paper: #cecbc7;
+  --color-bubble: #f0eeec;
+  --color-text-soft: #a8a6a3;
+  --color-ink-soft: #4a5163;
+  --color-error: #ff8f85; /* form error text on Mirage (about 7:1) */
+
+  --font-display: var(--font-instrument-serif), serif;
+  --font-body: var(--font-inter), sans-serif;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-inout: cubic-bezier(0.77, 0, 0.18, 1);
+
+  --sheet-radius: 44px;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-bg);
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+input,
+textarea {
+  font: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgb(223 221 219 / 0.6);
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-text);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 7px var(--color-bg);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.page {
+  position: relative;
+  overflow-x: clip;
+  background: var(--color-bg);
+}
+
+/* Header, sections, and footer share one container so the sheets stay sticky until the footer. */
+main {
+  display: contents;
+}
+
+/* Stacked sheets: motion.ts sets --p (how covered the sheet is) and --d (depth). */
+.sheet {
+  position: sticky;
+  top: 0;
+  margin-top: calc(var(--sheet-radius) * -1);
+  border-radius: var(--sheet-radius) var(--sheet-radius) 0 0;
+  transform: scale(calc(1 - var(--p, 0) * var(--d, 0.05)));
+  transform-origin: 50% 100%;
+}
+
+.sheet__veil {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  border-radius: inherit;
+  background: var(--color-shade);
+  opacity: calc(var(--p, 0) * 0.6);
+  pointer-events: none;
+}
+
+/* Zero-height target so a #hash link lands on the section's top edge. */
+.anchor {
+  height: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+/* Shared by the case demos */
+.case-cta {
+  display: inline-flex;
+  margin-top: 16px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.case-kicker {
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.case-note {
+  border-radius: 24px;
+  padding: 18px 20px 20px;
+}
+
+.case-note__body {
+  font-size: 17px;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.case-card {
+  border-radius: 26px;
+  padding: clamp(16px, 2vw, 24px);
+}
+
+/* App-window frame of the Katedra preview. */
+.case-card.window {
+  padding: 0;
+  overflow: hidden;
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow:
+    0 0 0 1px rgb(223 221 219 / 0.14),
+    0 60px 110px -40px rgb(11 14 21 / 0.75);
+}
+
+.window__bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--color-surface);
+}
+
+.window__dots {
+  display: flex;
+  gap: 6px;
+}
+
+.window__dots i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-ink-soft);
+}
+
+.window__title {
+  min-width: 0;
+  max-width: min(320px, 44vw);
+  padding: 4px 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-field);
+  color: var(--color-text-soft);
+  font-size: 12px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Language switch: the same diagonal wipe the case plates use, in Danube. */
+html.lang-leaving::after,
+html[data-lang-enter]::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: var(--color-accent);
+  pointer-events: none;
+}
+
+html.lang-leaving::after {
+  animation: sgWipeIn 0.7s cubic-bezier(0.77, 0, 0.18, 1) both;
+}
+
+html[data-lang-enter]::after {
+  animation: sgWipeOut 0.8s cubic-bezier(0.77, 0, 0.18, 1) both;
+}
+
+@keyframes sgWipeIn {
+  from {
+    clip-path: polygon(140% 0%, 140% 0%, 140% 100%, 100% 100%);
+  }
+  to {
+    clip-path: polygon(0% 0%, 140% 0%, 140% 100%, -40% 100%);
+  }
+}
+
+@keyframes sgWipeOut {
+  from {
+    clip-path: polygon(0% 0%, 140% 0%, 140% 100%, -40% 100%);
+  }
+  to {
+    clip-path: polygon(-40% 0%, 0% 0%, -40% 100%, -40% 100%);
+  }
+}
+
+@keyframes sgBuild {
+  0% {
+    opacity: 0;
+    filter: blur(22px);
+    transform: translate3d(0, 0.22em, 0) skewX(-14deg);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+}
+
+@keyframes sgUp {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 40px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sgIn {
+  0% {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translate3d(70px, 0, 0) skewX(-8deg);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+}
+
+@keyframes sgMarq {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes sgPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.7);
+  }
+}
+
+@media (pointer: fine) and (hover: hover) {
+  html[data-cursor='on'],
+  html[data-cursor='on'] * {
+    cursor: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

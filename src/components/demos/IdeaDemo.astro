@@ -1,0 +1,65 @@
+---
+import '../../styles/components/idea-demo.css';
+import { landing } from '../../i18n/landing';
+import type { Locale } from '../../i18n/ui';
+import { shorten } from '../../lib/text';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const { idea, cursor } = landing[lang];
+const initial = idea.examples[0].text;
+---
+
+<div class="idea__scene" data-scene-c="3" style="visibility:hidden">
+  <div class="case-note idea__note" data-piece>
+    <p class="case-kicker">{idea.audience}</p>
+    <p class="case-note__body">{idea.body}</p>
+  </div>
+  <div
+    class="case-card idea"
+    data-piece
+    data-tone="light"
+    data-idea
+    data-intro={idea.intro}
+    data-fallback={idea.fallback}
+    data-prefix={idea.prefill}
+  >
+    <label class="idea__label" for="idea">{idea.label}</label>
+    <input class="idea__input" id="idea" type="text" value={initial} data-idea-input />
+    <div class="idea__chips">
+      {
+        idea.examples.map((example) => (
+          <button type="button" class="idea__chip" data-example={example.text} data-cursor-label={cursor.use}>
+            {example.chip}
+          </button>
+        ))
+      }
+    </div>
+    <p class="idea__intro" data-idea-intro>{idea.intro.replace('{idea}', shorten(initial))}</p>
+    <ol class="idea__questions">
+      {
+        idea.questions.map((question, i) => (
+          <li>
+            <span>{i + 1}</span>
+            {question}
+          </li>
+        ))
+      }
+    </ol>
+    <a
+      class="case-cta"
+      href="#contacto"
+      data-idea-send
+      data-prefill={`${idea.prefill}${initial}`}
+      data-magnetic
+      data-cursor-label={cursor.send}>{idea.cta}</a
+    >
+  </div>
+</div>
+
+<script>
+  import '../../scripts/idea';
+</script>

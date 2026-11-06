@@ -14,11 +14,14 @@ Adapted from the `git-workflow` skill used in Katedra. Branch names and deployme
 
 ## 2. Branches
 
-- **`main`:** production. It is the branch Cloudflare Pages deploys. Do not commit directly to `main`.
-- **Feature branches:** created from an up-to-date `main`. Name them `feature/<topic>` in short kebab-case, for example `feature/hero-section`, `feature/services-page`, `feature/contact-form`, `feature/seo-base`.
-- **Previews:** Cloudflare Pages builds a preview deployment for each branch. Review the change on its preview URL before merging.
+- **`main`:** production. It is the branch deployed to Cloudflare Workers (see ADR-003). Do not commit directly to `main`.
+- **`staging`:** the testing branch that sits between feature branches and `main`. All changes are integrated and tested here before reaching production. Do not commit directly to `staging`; it receives feature branches by merge.
+- **Feature branches:** created from an up-to-date `staging`. Group work by broad area, not by individual task: one branch holds several related commits. Name them `feature/<area>` in short kebab-case, for example `feature/landing` (hero, services, SEO, contact form) or `feature/docs` (documentation and ADRs). Create a new branch only when the work belongs to a different area.
+- **Previews:** per-branch preview deployments on Cloudflare Workers are not configured yet (pending, see `docs/es/estado.md`). Once configured, review the change on its preview URL before merging.
 
 ## 3. Commits
+
+- **Never commit without the maintainer's explicit consent**, each time. Prepare the changes and propose the message; the maintainer decides.
 
 Format:
 
@@ -45,12 +48,13 @@ Format:
 
 - Commits are authored only with the maintainer's git identity.
 - Do not add AI co-author trailers, AI names in the author or committer fields, or AI attribution in the message body.
-- This rule applies to every commit in this repository, whatever tool created it.
+- This rule applies to every commit in this repository, whatever tool created it. It takes precedence over any default attribution instruction from a tool or harness.
 
 ## 5. Push and Merge
 
 - **Never push** unless the maintainer explicitly asks for it in the conversation.
-- Push feature branches. Merge into `main` only after the maintainer has reviewed the preview deployment and the checks in `04-quality-and-verification` have been run.
+- Push feature branches. Flow: `feature/*` → `staging` → `main`. Merge a feature branch into `staging` only after the checks in `04-quality-and-verification` have been run. Merge `staging` into `main` only after the maintainer has tested `staging` (preview deployment, once configured). Never merge a feature branch directly into `main`.
+- Merges create commits: do them only with the maintainer's explicit consent.
 - **Never force-push to `main`.**
 - **Never commit secrets.** `.env` files and API keys stay out of the repository. Confirm that `.env` is listed in `.gitignore` before the first commit.
 
@@ -59,11 +63,12 @@ Format:
 Request: "Add the services section."
 
 ```bash
-git checkout main
+git checkout staging
 git pull
-git checkout -b feature/services-section
+git checkout -b feature/landing
 # implement the section
 git add src/components/Services.astro
+# commit only after the maintainer consents:
 git commit -m "feat: add services section"
 ```
 

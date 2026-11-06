@@ -1,0 +1,376 @@
+---
+import '../styles/components/contact-form.css';
+import { LIMITS, TOPICS } from '../lib/contact';
+import { useTranslations, type Locale } from '../i18n/ui';
+import { landing } from '../i18n/landing';
+import { site } from '../lib/site';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const { cursor } = landing[lang];
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+
+const responseTime = site.responseTime[lang];
+const reply = responseTime
+  ? t('contact.replyIn').replace('{time}', responseTime)
+  : t('contact.reply');
+const footnote = [
+  responseTime && t('contact.responseTime').replace('{time}', responseTime),
+  t('contact.privacy'),
+]
+  .filter(Boolean)
+  .join(' ');
+const info = [
+  { label: t('contact.info.email'), value: site.email },
+  {
+    label: t('contact.info.city'),
+    value: site.city && `${site.city}, ${t('contact.info.country')}`,
+  },
+].filter((row) => row.value);
+---
+
+<div id="contacto" class="anchor"></div>
+<section class="contact sheet" data-sheet data-tone="light" aria-labelledby="contact-title">
+  <div class="sheet__veil" aria-hidden="true"></div>
+  <h2 class="contact__title" id="contact-title" data-reveal>
+    {t('contact.titleStart')}<span>{t('contact.titleEnd')}</span>
+  </h2>
+  <div class="contact__body">
+    <div class="contact__intro">
+      <p class="contact__lead">{t('contact.lead')}</p>
+      {
+        info.length > 0 && (
+          <div class="contact__info">
+            {info.map((row) => (
+              <>
+                <span class="contact__info-label">{row.label}</span>
+                <span>{row.value}</span>
+              </>
+            ))}
+          </div>
+        )
+      }
+    </div>
+    <div class="contact__card" data-tone="dark">
+      <form
+        class="contact__form"
+        method="post"
+        action="/api/contact"
+        novalidate
+        data-sending={t('contact.sending')}
+        data-error-name={t('contact.error.name')}
+        data-error-email={t('contact.error.email')}
+        data-error-topic={t('contact.error.topic')}
+        data-error-long={t('contact.error.tooLong')}
+        data-error-message={t('contact.error.message')}
+        data-error-pending={t('contact.error.captchaPending')}
+        data-error-invalid={t('contact.error.invalid')}
+        data-error-captcha={t('contact.error.captcha')}
+        data-error-unavailable={t('contact.error.unavailable')}
+        data-placeholder-other={t('contact.messagePlaceholder')}
+        data-placeholder-details={t('contact.detailsPlaceholder')}
+      >
+        <input type="hidden" name="locale" value={lang} />
+
+        <div class="contact__field">
+          <label for="contact-name">{t('contact.name')}</label>
+          <input
+            id="contact-name"
+            class="contact__control"
+            type="text"
+            name="name"
+            required
+            autocomplete="name"
+            data-field="name"
+            aria-describedby="contact-name-error"
+          />
+          <p class="contact__error" id="contact-name-error" data-error="name" hidden></p>
+        </div>
+
+        <div class="contact__field">
+          <label for="contact-email">{t('contact.email')}</label>
+          <input
+            id="contact-email"
+            class="contact__control"
+            type="email"
+            name="email"
+            required
+            autocomplete="email"
+            data-field="email"
+            aria-describedby="contact-email-error"
+          />
+          <p class="contact__error" id="contact-email-error" data-error="email" hidden></p>
+        </div>
+
+        <fieldset
+          class="contact__topics"
+          role="radiogroup"
+          data-field="topic"
+          aria-required="true"
+          aria-describedby="contact-topic-error"
+        >
+          <legend class="contact__legend">{t('contact.topic')}</legend>
+          <div class="contact__chips">
+            {
+              TOPICS.map((topic) => (
+                <label class="contact__chip">
+                  <input type="radio" name="topic" value={topic} />
+                  <span>{t(`contact.topic.${topic}`)}</span>
+                </label>
+              ))
+            }
+          </div>
+          <p class="contact__error" id="contact-topic-error" data-error="topic" hidden></p>
+        </fieldset>
+
+        <div class="contact__field">
+          <label for="contact-message">
+            {t('contact.details')} <span class="contact__optional" data-optional>{t('contact.detailsOptional')}</span>
+          </label>
+          <textarea
+            id="contact-message"
+            class="contact__control"
+            name="message"
+            rows="4"
+            maxlength={LIMITS.message}
+            placeholder={t('contact.detailsPlaceholder')}
+            data-field="message"
+            aria-describedby="contact-message-error"></textarea>
+          <p class="contact__error" id="contact-message-error" data-error="message" hidden></p>
+        </div>
+
+        {siteKey && <div class="cf-turnstile" data-sitekey={siteKey} data-theme="dark" />}
+
+        <p class="contact__status" role="status" aria-live="polite"></p>
+        <button class="contact__submit" type="submit" data-magnetic data-cursor-label={cursor.send}>
+          <span>{t('contact.submit')}</span><span aria-hidden="true">→</span>
+        </button>
+        <p class="contact__footnote">{footnote}</p>
+      </form>
+
+      <div
+        class="contact__done"
+        role="status"
+        data-done
+        data-thanks={t('contact.thanks')}
+        data-thanks-name={t('contact.thanksName')}
+        data-reply={reply}
+        hidden
+      >
+        <p class="contact__thanks" data-done-thanks></p>
+        <div class="contact__next">
+          <p class="contact__reply" data-done-reply></p>
+          <button class="contact__again" type="button" data-again data-cursor-label={cursor.other}>
+            {t('contact.again')}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{
+  siteKey && (
+    <script
+      is:inline
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+      async
+      defer
+    />
+  )
+}
+
+<script>
+  import { reduced } from '../scripts/motion';
+  import { EMAIL_PATTERN, LIMITS } from '../lib/contact';
+
+  type Field = 'name' | 'email' | 'topic' | 'message';
+  const FIELDS: Field[] = ['name', 'email', 'topic', 'message'];
+
+  const form = document.querySelector<HTMLFormElement>('.contact__form');
+  const status = form?.querySelector<HTMLElement>('.contact__status');
+  const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+  const done = document.querySelector<HTMLElement>('[data-done]');
+  const thanks = done?.querySelector<HTMLElement>('[data-done-thanks]');
+  const reply = done?.querySelector<HTMLElement>('[data-done-reply]');
+  const message = form?.querySelector<HTMLTextAreaElement>('textarea[name="message"]');
+  const optional = form?.querySelector<HTMLElement>('[data-optional]');
+  let exit: Animation | undefined;
+
+  const text = (key: string) => form?.dataset[key] ?? '';
+  const value = (data: FormData, key: string) => String(data.get(key) ?? '').trim();
+
+  // Returns the error text for a field, or '' when it is valid. Mirrors parseContact on the server.
+  function check(field: Field): string {
+    if (!form) return '';
+    const data = new FormData(form);
+    switch (field) {
+      case 'name':
+        if (!value(data, 'name')) return text('errorName');
+        return value(data, 'name').length > LIMITS.name
+          ? text('errorLong').replace('{max}', String(LIMITS.name))
+          : '';
+      case 'email':
+        if (!EMAIL_PATTERN.test(value(data, 'email'))) return text('errorEmail');
+        return value(data, 'email').length > LIMITS.email
+          ? text('errorLong').replace('{max}', String(LIMITS.email))
+          : '';
+      case 'topic':
+        return value(data, 'topic') ? '' : text('errorTopic');
+      case 'message':
+        return value(data, 'topic') === 'other' && value(data, 'message').length < LIMITS.messageMin
+          ? text('errorMessage').replace('{min}', String(LIMITS.messageMin))
+          : '';
+    }
+  }
+
+  function show(field: Field, error: string) {
+    const target = form?.querySelector<HTMLElement>(`[data-field="${field}"]`);
+    const output = form?.querySelector<HTMLElement>(`[data-error="${field}"]`);
+    if (!target || !output) return;
+    output.textContent = error;
+    output.hidden = !error;
+    target.setAttribute('aria-invalid', String(Boolean(error)));
+  }
+
+  function clearErrors() {
+    FIELDS.forEach((field) => show(field, ''));
+  }
+
+  const hasError = (field: Field) =>
+    form?.querySelector<HTMLElement>(`[data-error="${field}"]`)?.hidden === false;
+
+  // With "Otro" the message is the description (required); with a listed topic it is optional detail.
+  function updateTopic() {
+    if (!form || !message) return;
+    const other = value(new FormData(form), 'topic') === 'other';
+    message.required = other;
+    message.placeholder = other ? text('placeholderOther') : text('placeholderDetails');
+    if (optional) optional.hidden = other;
+  }
+
+  function focusField(field: Field) {
+    const target = form?.querySelector<HTMLElement>(`[data-field="${field}"]`);
+    (field === 'topic' ? target?.querySelector<HTMLElement>('input') : target)?.focus();
+  }
+
+  function fieldOf(target: EventTarget | null): Field | undefined {
+    const name = (target instanceof Element ? target.closest<HTMLElement>('[data-field]') : null)
+      ?.dataset.field;
+    return FIELDS.find((field) => field === name);
+  }
+
+  async function showDone(name: string, email: string) {
+    if (!form || !done || !thanks || !reply) return;
+    if (!reduced) {
+      exit = form.animate(
+        [
+          { transform: 'none', opacity: 1, filter: 'blur(0px)' },
+          { transform: 'translate3d(0,-50px,0) skewY(-3deg)', opacity: 0, filter: 'blur(8px)' },
+        ],
+        { duration: 420, easing: 'cubic-bezier(.7,0,.84,0)', fill: 'forwards' },
+      );
+      await exit.finished;
+    }
+    thanks.textContent = name
+      ? (done.dataset.thanksName ?? '').replace('{name}', name)
+      : (done.dataset.thanks ?? '');
+    reply.textContent = (done.dataset.reply ?? '').replace('{email}', email);
+    form.hidden = true;
+    done.hidden = false;
+  }
+
+  function showForm() {
+    if (!form || !done) return;
+    exit?.cancel();
+    form.hidden = false;
+    done.hidden = true;
+  }
+
+  done?.querySelector('[data-again]')?.addEventListener('click', showForm);
+
+  // Case and service links prefill the message (scripts/prefill.ts). The text is the user's own
+  // description, so it selects "Otro".
+  window.addEventListener('contact:prefill', (event) => {
+    if (!message) return;
+    showForm();
+    const other = form?.querySelector<HTMLInputElement>('input[name="topic"][value="other"]');
+    if (other) other.checked = true;
+    updateTopic();
+    show('topic', '');
+    message.value = (event as CustomEvent<string>).detail;
+  });
+
+  // A field is checked when the user leaves it (only if it has content or already shows an error)
+  // and re-checked while typing once an error is visible, so the message clears as soon as it is fixed.
+  form?.addEventListener('focusout', (event) => {
+    const field = fieldOf(event.target);
+    if (!field || field === 'topic' || !form) return;
+    if (value(new FormData(form), field) || hasError(field)) show(field, check(field));
+  });
+  form?.addEventListener('input', (event) => {
+    const field = fieldOf(event.target);
+    if (field && hasError(field)) show(field, check(field));
+  });
+  form?.addEventListener('change', (event) => {
+    if (fieldOf(event.target) !== 'topic') return;
+    updateTopic();
+    show('topic', check('topic'));
+    if (hasError('message')) show('message', check('message'));
+  });
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!form || !status || !button) return;
+
+    const errors = FIELDS.map((field) => [field, check(field)] as const);
+    errors.forEach(([field, error]) => show(field, error));
+    const invalid = errors.find(([, error]) => error);
+    if (invalid) {
+      status.textContent = '';
+      focusField(invalid[0]);
+      return;
+    }
+
+    const data = new FormData(form);
+    if (form.querySelector('.cf-turnstile') && !value(data, 'cf-turnstile-response')) {
+      status.textContent = text('errorPending');
+      return;
+    }
+
+    button.disabled = true;
+    status.textContent = text('sending');
+
+    let result = text('errorUnavailable');
+    try {
+      const res = await fetch(form.action, { method: 'POST', body: data });
+      const body = (await res.json()) as { ok: boolean; error?: string };
+      if (body.ok) {
+        result = '';
+        await showDone(value(data, 'name'), value(data, 'email'));
+        form.reset();
+        clearErrors();
+        updateTopic();
+      } else if (body.error === 'invalid') {
+        result = text('errorInvalid');
+      } else if (body.error === 'captcha') {
+        result = text('errorCaptcha');
+      }
+    } catch {
+      // network failure keeps the "unavailable" message
+    }
+
+    status.textContent = result;
+    button.disabled = false;
+    // A Turnstile token is single-use, so request a fresh one after every attempt.
+    try {
+      (window as unknown as { turnstile?: { reset: () => void } }).turnstile?.reset();
+    } catch {
+      // widget not loaded
+    }
+  });
+</script>

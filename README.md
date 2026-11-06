@@ -1,43 +1,20 @@
-# Astro Starter Kit: Minimal
+# SESGO TI — sitio web
 
-```sh
-bun create astro@latest -- --template minimal
-```
+Landing page de captación de clientes para SESGO TI: desarrollo de aplicaciones web, automatización e integración de IA.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Stack (ver [ADRs](docs/es/decisiones.md)): Astro, Cloudflare Workers, Supabase, Resend.
 
-## 🚀 Project Structure
+## Comandos
 
-Inside of your Astro project, you'll see the following folders and files:
+Se ejecutan desde la raíz del proyecto con [bun](https://bun.sh):
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+| Comando | Acción |
+| --- | --- |
+| `bun install` | Instala las dependencias |
+| `bun run dev` | Servidor de desarrollo |
+| `bun run build` | Genera el build en `./dist/` |
+| `bun run preview` | Previsualiza el build |
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Documentación
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your production site to `./dist/`          |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Ver [`docs/`](docs/README.md): decisiones técnicas, contexto de marca, arquitectura y estado del proyecto, en español e inglés.
